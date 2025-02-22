@@ -120,7 +120,7 @@ export const Users = () => {
   return (
     <div className="p-4">
       <h1 className="mb-4">
-        Home / <span className="font-bold">Users</span>
+        Home / <span className="font-bold bg-custom-yellow">Users</span>
       </h1>
       <div className="flex items-center gap-4 mb-4">
         <div className="flex items-center gap-2">
@@ -185,7 +185,6 @@ export const Users = () => {
           )}
         </div>
       </div>
-
       <div className="overflow-x-auto">
         <table className="min-w-full">
           <thead>

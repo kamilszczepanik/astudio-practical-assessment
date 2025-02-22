@@ -1,1 +1,24 @@
 @import "tailwindcss";
+
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  --color-black: #322625;
+  --color-grey: #ebebeb;
+  --color-blue: #c0e3e5;
+  --color-yellow: #fdc936;
+}
+
+@theme {
+  --color-*: initial;
+  --color-white: #fff;
+  --color-custom-black: #322625;
+  --color-custom-grey: #ebebeb;
+  --color-custom-blue: #c0e3e5;
+  --color-custom-yellow: #fdc936;
+}
