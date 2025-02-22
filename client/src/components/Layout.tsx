@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
+import { Button } from "./ui/button";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -15,12 +16,13 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           isSidebarOpen ? "w-64" : "w-20"
         } py-4 pr-2 pl-3 border-r border-custom-grey transition-all duration-300 ease-in-out`}
       >
-        <button
+        <Button
           onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-          className="mb-4 p-2 rounded-md hover:bg-custom-grey transition-colors"
+          variant="ghost"
+          className="mb-4 p-2 rounded-md hover:bg-custom-grey transition-colors cursor-pointer"
         >
           {isSidebarOpen ? "◀" : "▶"}
-        </button>
+        </Button>
         <nav>
           <ul className="space-y-2 pr-2">
             <li>
@@ -29,10 +31,14 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 className={({ isActive }) =>
                   `block px-4 py-2 rounded-md text-white ${
                     isActive ? "bg-custom-blue" : ""
-                  } hover:bg-custom-grey`
+                  } hover:bg-custom-grey text-custom-black`
                 }
               >
-                {isSidebarOpen ? "👥 Users" : <span title="Users">👥</span>}
+                {isSidebarOpen ? (
+                  <span className="text-custom-black">👥 Users</span>
+                ) : (
+                  <span title="Users">👥</span>
+                )}
               </NavLink>
             </li>
             <li>
@@ -41,11 +47,11 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 className={({ isActive }) =>
                   `block px-4 py-2 rounded-md text-white ${
                     isActive ? "bg-custom-blue" : ""
-                  } hover:bg-custom-grey`
+                  } hover:bg-custom-grey text-custom-black`
                 }
               >
                 {isSidebarOpen ? (
-                  "📦 Products"
+                  <span className="text-custom-black">📦 Products</span>
                 ) : (
                   <span title="Products">📦</span>
                 )}

@@ -28,7 +28,6 @@ export const Users = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalUsers, setTotalUsers] = useState(0);
   const totalPages = Math.min(Math.ceil(totalUsers / entriesPerPage));
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchUsers();
@@ -50,19 +49,14 @@ export const Users = () => {
   }, [searchQuery, users]);
 
   const fetchUsers = async () => {
-    setLoading(true);
-    try {
-      const skip = (currentPage - 1) * entriesPerPage;
-      const usersInfo = await api.users({
-        gender: selectedGender,
-        limit: entriesPerPage,
-        skip,
-      });
-      setUsers(usersInfo.users);
-      setTotalUsers(usersInfo.total);
-    } finally {
-      setLoading(false);
-    }
+    const skip = (currentPage - 1) * entriesPerPage;
+    const usersInfo = await api.users({
+      gender: selectedGender,
+      limit: entriesPerPage,
+      skip,
+    });
+    setUsers(usersInfo.users);
+    setTotalUsers(usersInfo.total);
   };
 
   const handlePageChange = (page: number) => {
@@ -119,38 +113,9 @@ export const Users = () => {
     const regex = new RegExp(`(${query})`, "gi");
     return text.replace(
       regex,
-      `<mark class="bg-yellow-200 rounded-sm">$1</mark>`
+      `<mark class="bg-custom-yellow rounded-sm">$1</mark>`
     );
   };
-
-  const TableSkeleton = () => (
-    <div className="animate-pulse">
-      <div className="min-w-full">
-        <div className="flex">
-          {TABLE_COLUMNS.map((column) => (
-            <div
-              key={column.key}
-              className="text-sm font-bold bg-custom-blue/50 px-3 py-3 border-r-2 border-white text-left flex-1"
-            >
-              <div className="h-4 bg-custom-blue rounded" />
-            </div>
-          ))}
-        </div>
-        {[...Array(entriesPerPage)].map((_, idx) => (
-          <div key={idx} className="flex">
-            {TABLE_COLUMNS.map((column) => (
-              <div
-                key={`${idx}-${column.key}`}
-                className="px-3 py-2 border-2 text-sm border-custom-grey flex-1"
-              >
-                <div className="h-4 bg-custom-grey/50 rounded" />
-              </div>
-            ))}
-          </div>
-        ))}
-      </div>
-    </div>
-  );
 
   return (
     <div className="p-4">
@@ -160,7 +125,7 @@ export const Users = () => {
       <div className="flex items-center gap-4 mb-2">
         <div className="flex items-center gap-2">
           <DropdownMenu>
-            <DropdownMenuTrigger className="px-3 py-1 text-sm border rounded hover:bg-gray-50">
+            <DropdownMenuTrigger className="px-3 py-1 text-sm rounded hover:bg-gray-50">
               {entriesPerPage}
             </DropdownMenuTrigger>
             <DropdownMenuContent>
@@ -180,7 +145,7 @@ export const Users = () => {
 
         <div className="flex items-center gap-2">
           <DropdownMenu>
-            <DropdownMenuTrigger className="px-3 py-1 text-sm border rounded hover:bg-gray-50">
+            <DropdownMenuTrigger className="px-3 py-1 text-sm hover:bg-gray-50">
               {selectedGender
                 ? selectedGender.charAt(0).toUpperCase() +
                   selectedGender.slice(1)
@@ -221,46 +186,42 @@ export const Users = () => {
         </div>
       </div>
       <div className="overflow-x-auto">
-        {loading ? (
-          <TableSkeleton />
-        ) : (
-          <table className="min-w-full">
-            <thead>
-              <tr>
+        <table className="min-w-full">
+          <thead>
+            <tr>
+              {TABLE_COLUMNS.map((column) => (
+                <th
+                  key={column.key}
+                  className="text-sm font-bold bg-custom-blue px-3 py-3 border-r-2 border-white text-left"
+                >
+                  {column.label}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {filteredUsers.slice(0, entriesPerPage).map((user) => (
+              <tr key={user.username} className="hover:bg-custom-grey">
                 {TABLE_COLUMNS.map((column) => (
-                  <th
-                    key={column.key}
-                    className="text-sm font-bold bg-custom-blue px-3 py-3 border-r-2 border-white text-left"
-                  >
-                    {column.label}
-                  </th>
+                  <td
+                    key={`${user.username}-${column.key}`}
+                    className="px-3 py-2 border-2 text-sm border-custom-grey"
+                    dangerouslySetInnerHTML={{
+                      __html: highlightText(
+                        String(user[column.key]),
+                        searchQuery
+                      ),
+                    }}
+                  />
                 ))}
               </tr>
-            </thead>
-            <tbody>
-              {filteredUsers.slice(0, entriesPerPage).map((user) => (
-                <tr key={user.username} className="hover:bg-custom-grey">
-                  {TABLE_COLUMNS.map((column) => (
-                    <td
-                      key={`${user.username}-${column.key}`}
-                      className="px-3 py-2 border-2 text-sm border-custom-grey"
-                      dangerouslySetInnerHTML={{
-                        __html: highlightText(
-                          String(user[column.key]),
-                          searchQuery
-                        ),
-                      }}
-                    />
-                  ))}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
+            ))}
+          </tbody>
+        </table>
 
-        <div className="flex items-center justify-center gap-2 mt-16">
+        <div className="flex items-center justify-center gap-2 mt-16 mb-1">
           <Button
-            variant="link"
+            variant="ghost"
             size="sm"
             onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
             disabled={currentPage === 1}
@@ -276,7 +237,7 @@ export const Users = () => {
             ) : (
               <Button
                 key={`page-${pageNumber}`}
-                variant="link"
+                variant="ghost"
                 size="sm"
                 onClick={() => handlePageChange(pageNumber as number)}
                 className={currentPage === pageNumber ? "pb-4" : ""}
@@ -287,7 +248,7 @@ export const Users = () => {
           )}
 
           <Button
-            variant="link"
+            variant="ghost"
             size="sm"
             onClick={() =>
               handlePageChange(Math.min(totalPages, currentPage + 1))
