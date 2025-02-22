@@ -1,5 +1,9 @@
 import axiosInstance from "../utils/axiosInstance";
 
+interface UserFilters {
+  gender?: "male" | "female";
+}
+
 const api = (() => {
   const headers = {
     Accept: "application/json",
@@ -27,8 +31,16 @@ const api = (() => {
   }
 
   return {
-    users: async (): Promise<any> => {
-      const response = await get("/users");
+    users: async (filters?: UserFilters) => {
+      const params = new URLSearchParams();
+      if (filters?.gender) {
+        params.append("key", "gender");
+        params.append("value", filters.gender);
+      }
+
+      const queryString = params.toString();
+      const url = queryString ? `/users/filter?${queryString}` : "/users";
+      const response = await get(url);
       return response;
     },
   };

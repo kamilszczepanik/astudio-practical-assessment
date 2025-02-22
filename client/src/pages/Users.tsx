@@ -12,49 +12,83 @@ interface User {
 }
 
 const ENTRIES_OPTIONS = [5, 10, 20, 50];
+const GENDER_OPTIONS = [
+  { label: "All", value: undefined },
+  { label: "Male", value: "male" },
+  { label: "Female", value: "female" },
+];
 
 export const Users = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [columns, setColumns] = useState<Set<string>>(new Set());
   const [entriesPerPage, setEntriesPerPage] = useState(5);
+  const [selectedGender, setSelectedGender] = useState<
+    "male" | "female" | undefined
+  >();
 
   useEffect(() => {
-    (async () => {
-      const usersInfo = await api.users();
-      setUsers(usersInfo.users);
+    fetchUsers();
+  }, [selectedGender]);
 
-      if (usersInfo.users.length > 0) {
-        const allColumns = new Set<string>();
-        Object.keys(usersInfo.users[0]).forEach((key) => {
-          allColumns.add(key);
-        });
-        setColumns(allColumns);
-      }
-    })();
-  }, []);
+  const fetchUsers = async () => {
+    const usersInfo = await api.users({ gender: selectedGender });
+    setUsers(usersInfo.users);
+
+    if (usersInfo.users.length > 0) {
+      const allColumns = new Set<string>();
+      Object.keys(usersInfo.users[0]).forEach((key) => {
+        allColumns.add(key);
+      });
+      setColumns(allColumns);
+    }
+  };
 
   return (
     <div className="p-4">
       <h1 className="text-2xl font-bold mb-4">Users</h1>
 
-      <div className="flex items-center gap-2 mb-4">
-        <span className="text-sm">Show</span>
-        <DropdownMenu>
-          <DropdownMenuTrigger className="px-3 py-1 text-sm border rounded hover:bg-gray-50">
-            {entriesPerPage} entries
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            {ENTRIES_OPTIONS.map((option) => (
-              <DropdownMenuItem
-                key={option}
-                onClick={() => setEntriesPerPage(option)}
-                className="cursor-pointer"
-              >
-                {option} entries
-              </DropdownMenuItem>
-            ))}
-          </DropdownMenuContent>
-        </DropdownMenu>
+      <div className="flex items-center gap-4 mb-4">
+        <div className="flex items-center gap-2">
+          <DropdownMenu>
+            <DropdownMenuTrigger className="px-3 py-1 text-sm border rounded hover:bg-gray-50">
+              {entriesPerPage}
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              {ENTRIES_OPTIONS.map((option) => (
+                <DropdownMenuItem
+                  key={option}
+                  onClick={() => setEntriesPerPage(option)}
+                  className="cursor-pointer"
+                >
+                  {option}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <span className="text-sm">Entries</span>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <DropdownMenu>
+            <DropdownMenuTrigger className="px-3 py-1 text-sm border rounded hover:bg-gray-50">
+              {selectedGender
+                ? selectedGender.charAt(0).toUpperCase() +
+                  selectedGender.slice(1)
+                : "Gender"}
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              {GENDER_OPTIONS.map((option) => (
+                <DropdownMenuItem
+                  key={option.label}
+                  onClick={() => setSelectedGender(option.value)}
+                  className="cursor-pointer"
+                >
+                  {option.label}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </div>
 
       <div className="overflow-x-auto">
