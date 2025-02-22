@@ -7,6 +7,7 @@ import {
   DropdownMenuTrigger,
 } from "../components/ui/dropdown-menu";
 import { User, TABLE_COLUMNS } from "../types/users";
+import { Button } from "../components/ui/button";
 
 const ENTRIES_OPTIONS = [5, 10, 20, 50];
 const GENDER_OPTIONS = [
@@ -69,7 +70,7 @@ export const Users = () => {
 
   const handleEntriesChange = (value: number) => {
     setEntriesPerPage(value);
-    setCurrentPage(1); // Reset to first page when entries per page changes
+    setCurrentPage(1);
   };
 
   const getPageNumbers = () => {
@@ -118,8 +119,9 @@ export const Users = () => {
 
   return (
     <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">Users</h1>
-
+      <h1 className="mb-4">
+        Home / <span className="font-bold">Users</span>
+      </h1>
       <div className="flex items-center gap-4 mb-4">
         <div className="flex items-center gap-2">
           <DropdownMenu>
@@ -164,12 +166,13 @@ export const Users = () => {
         </div>
 
         <div className="flex items-center gap-2 ml-auto">
-          <button
+          <Button
+            variant="ghost"
+            size="icon"
             onClick={() => setShowSearch(!showSearch)}
-            className="p-2 hover:bg-gray-100 rounded-full"
           >
             🔍
-          </button>
+          </Button>
           {showSearch && (
             <input
               type="text"
@@ -190,7 +193,7 @@ export const Users = () => {
               {TABLE_COLUMNS.map((column) => (
                 <th
                   key={column.key}
-                  className="px-4 py-2 text-left border-b text-sm font-semibold text-gray-600"
+                  className="px-4 py-2 text-left border-b text-sm font-bold bg-blue-200"
                 >
                   {column.label}
                 </th>
@@ -217,14 +220,15 @@ export const Users = () => {
           </tbody>
         </table>
 
-        <div className="flex items-center justify-center gap-2 mt-4">
-          <button
+        <div className="flex items-center justify-center gap-2 mt-16">
+          <Button
+            variant="link"
+            size="sm"
             onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
             disabled={currentPage === 1}
-            className="px-3 py-1 rounded border hover:bg-gray-50 disabled:opacity-50"
           >
             ←
-          </button>
+          </Button>
 
           {getPageNumbers().map((pageNumber, idx) =>
             pageNumber === "..." ? (
@@ -232,27 +236,28 @@ export const Users = () => {
                 ...
               </span>
             ) : (
-              <button
+              <Button
                 key={`page-${pageNumber}`}
+                variant="link"
+                size="sm"
                 onClick={() => handlePageChange(pageNumber as number)}
-                className={`px-3 py-1 rounded border transition-colors ${
-                  currentPage === pageNumber ? "text-blue-500" : ""
-                }`}
+                className={currentPage === pageNumber ? "pb-4" : ""}
               >
                 {pageNumber}
-              </button>
+              </Button>
             )
           )}
 
-          <button
+          <Button
+            variant="link"
+            size="sm"
             onClick={() =>
               handlePageChange(Math.min(totalPages, currentPage + 1))
             }
             disabled={currentPage === totalPages}
-            className={`px-3 py-1 rounded border hover:bg-gray-50 disabled:opacity-50`}
           >
             →
-          </button>
+          </Button>
         </div>
       </div>
     </div>

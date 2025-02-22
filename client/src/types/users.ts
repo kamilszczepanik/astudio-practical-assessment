@@ -8,6 +8,9 @@ export const USER_FIELDS = [
   "username",
   "bloodGroup",
   "eyeColor",
+  "birthDate",
+  "height",
+  "weight",
 ] as const;
 
 export type UserField = (typeof USER_FIELDS)[number];
@@ -22,13 +25,14 @@ export interface User {
   username: string;
   bloodGroup: string;
   eyeColor: string;
+  birthDate: string;
+  height: number;
+  weight: number;
 }
 
 export const TABLE_COLUMNS = USER_FIELDS.map((field) => ({
   key: field,
-  label: field
-    .replace(/([A-Z])/g, " $1")
-    .replace(/^./, (str) => str.toUpperCase()),
+  label: field.replace(/([A-Z])/g, " $1").toUpperCase(),
 }));
 
 export interface UsersResponse {
