@@ -1,20 +1,19 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { Users } from "./pages/Users";
-import { Products } from "./pages/Products";
-import { Home } from "./pages/Home";
 import Layout from "./components/Layout";
 
 function App() {
   return (
-    <Router>
+    <BrowserRouter>
       <Layout>
         <Routes>
-          <Route path="/" element={<Home />} />
+          {/* Redirect from / to /users */}
+          <Route path="/" element={<Navigate to="/users" replace />} />
           <Route path="/users" element={<Users />} />
-          <Route path="/products" element={<Products />} />
+          <Route path="/products" element={<div>Products Page</div>} />
         </Routes>
       </Layout>
-    </Router>
+    </BrowserRouter>
   );
 }
 
