@@ -1,5 +1,5 @@
 import axiosInstance from "../utils/axiosInstance";
-import { User, UsersResponse, USER_FIELDS } from "../types/users";
+import { UsersResponse, USER_FIELDS } from "../types/users";
 
 interface UserFilters {
   gender?: "male" | "female";
@@ -37,10 +37,8 @@ const api = (() => {
     users: async (filters?: UserFilters): Promise<UsersResponse> => {
       const params = new URLSearchParams();
 
-      // Always include field selection
       params.append("select", USER_FIELDS.join(","));
 
-      // Add pagination params
       if (filters?.limit) {
         params.append("limit", String(filters.limit));
       }
@@ -48,10 +46,8 @@ const api = (() => {
         params.append("skip", String(filters.skip));
       }
 
-      // Base URL for all users
       let url = `/users?${params.toString()}`;
 
-      // If gender filter is applied, use the filter endpoint
       if (filters?.gender) {
         url = `/users/filter?key=gender&value=${
           filters.gender

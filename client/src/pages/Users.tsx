@@ -11,12 +11,15 @@ import { User, TABLE_COLUMNS } from "../types/users";
 const ENTRIES_OPTIONS = [5, 10, 20, 50];
 const GENDER_OPTIONS = [
   { label: "All", value: undefined },
-  { label: "Male", value: "male" },
-  { label: "Female", value: "female" },
-];
+  { label: "Male", value: "male" as const },
+  { label: "Female", value: "female" as const },
+] as const;
 
 export const Users = () => {
   const [users, setUsers] = useState<User[]>([]);
+  const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
+  const [showSearch, setShowSearch] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const [entriesPerPage, setEntriesPerPage] = useState(5);
   const [selectedGender, setSelectedGender] = useState<
     "male" | "female" | undefined
@@ -28,6 +31,21 @@ export const Users = () => {
   useEffect(() => {
     fetchUsers();
   }, [selectedGender, entriesPerPage, currentPage]);
+
+  useEffect(() => {
+    if (searchQuery.trim() === "") {
+      setFilteredUsers(users);
+      return;
+    }
+
+    const query = searchQuery.toLowerCase();
+    const filtered = users.filter((user) =>
+      Object.values(user).some((value) =>
+        String(value).toLowerCase().includes(query)
+      )
+    );
+    setFilteredUsers(filtered);
+  }, [searchQuery, users]);
 
   const fetchUsers = async () => {
     const skip = (currentPage - 1) * entriesPerPage;
@@ -88,6 +106,16 @@ export const Users = () => {
     return array;
   };
 
+  const highlightText = (text: string, query: string) => {
+    if (!query.trim()) return text;
+
+    const regex = new RegExp(`(${query})`, "gi");
+    return text.replace(
+      regex,
+      `<mark class="bg-yellow-200 rounded-sm">$1</mark>`
+    );
+  };
+
   return (
     <div className="p-4">
       <h1 className="text-2xl font-bold mb-4">Users</h1>
@@ -134,6 +162,25 @@ export const Users = () => {
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
+
+        <div className="flex items-center gap-2 ml-auto">
+          <button
+            onClick={() => setShowSearch(!showSearch)}
+            className="p-2 hover:bg-gray-100 rounded-full"
+          >
+            🔍
+          </button>
+          {showSearch && (
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search..."
+              className="px-3 py-1 border rounded text-sm"
+              autoFocus
+            />
+          )}
+        </div>
       </div>
 
       <div className="overflow-x-auto">
@@ -151,15 +198,19 @@ export const Users = () => {
             </tr>
           </thead>
           <tbody>
-            {users.slice(0, entriesPerPage).map((user) => (
+            {filteredUsers.slice(0, entriesPerPage).map((user) => (
               <tr key={user.username}>
                 {TABLE_COLUMNS.map((column) => (
                   <td
                     key={`${user.username}-${column.key}`}
                     className="px-4 py-2 border-b text-sm"
-                  >
-                    {String(user[column.key])}
-                  </td>
+                    dangerouslySetInnerHTML={{
+                      __html: highlightText(
+                        String(user[column.key]),
+                        searchQuery
+                      ),
+                    }}
+                  />
                 ))}
               </tr>
             ))}
