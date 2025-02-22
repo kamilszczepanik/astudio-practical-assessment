@@ -1,8 +1,41 @@
 import axiosInstance from "../utils/axiosInstance";
 
+interface User {
+  firstName: string;
+  lastName: string;
+  maidenName: string;
+  age: number;
+  gender: string;
+  email: string;
+  username: string;
+  bloodGroup: string;
+  eyeColor: string;
+}
+
+interface UsersResponse {
+  users: User[];
+  total: number;
+  skip: number;
+  limit: number;
+}
+
 interface UserFilters {
   gender?: "male" | "female";
+  limit?: number;
+  skip?: number;
 }
+
+const USER_FIELDS = [
+  "firstName",
+  "lastName",
+  "maidenName",
+  "age",
+  "gender",
+  "email",
+  "username",
+  "bloodGroup",
+  "eyeColor",
+].join(",");
 
 const api = (() => {
   const headers = {
@@ -31,17 +64,32 @@ const api = (() => {
   }
 
   return {
-    users: async (filters?: UserFilters) => {
+    users: async (filters?: UserFilters): Promise<UsersResponse> => {
       const params = new URLSearchParams();
-      if (filters?.gender) {
-        params.append("key", "gender");
-        params.append("value", filters.gender);
+
+      // Always include field selection
+      params.append("select", USER_FIELDS);
+
+      // Add pagination params
+      if (filters?.limit) {
+        params.append("limit", String(filters.limit));
+      }
+      if (filters?.skip) {
+        params.append("skip", String(filters.skip));
       }
 
-      const queryString = params.toString();
-      const url = queryString ? `/users/filter?${queryString}` : "/users";
+      // Base URL for all users
+      let url = `/users?${params.toString()}`;
+
+      // If gender filter is applied, use the filter endpoint
+      if (filters?.gender) {
+        url = `/users/filter?key=gender&value=${
+          filters.gender
+        }&${params.toString()}`;
+      }
+
       const response = await get(url);
-      return response;
+      return response as UsersResponse;
     },
   };
 })();

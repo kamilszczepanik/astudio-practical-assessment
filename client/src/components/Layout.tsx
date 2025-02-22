@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
 
 interface LayoutProps {
@@ -6,33 +6,49 @@ interface LayoutProps {
 }
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
   return (
     <div className="flex min-h-screen">
-      <aside className="w-64 p-5 border-r border-gray-200">
+      <aside
+        className={`${
+          isSidebarOpen ? "w-64" : "w-20"
+        } py-4 pr-2 pl-3 border-r border-gray-200 transition-all duration-300 ease-in-out`}
+      >
+        <button
+          onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+          className="mb-4 p-2 rounded-md hover:bg-gray-200 transition-colors"
+        >
+          {isSidebarOpen ? "◀" : "▶"}
+        </button>
         <nav>
-          <ul className="space-y-2">
+          <ul className="space-y-2 pr-2">
             <li>
               <NavLink
                 to="/users"
                 className={({ isActive }) =>
-                  `block px-3 py-2 rounded-md text-white ${
+                  `block px-4 py-2 rounded-md text-white ${
                     isActive ? "bg-blue-600" : ""
                   } hover:bg-gray-200`
                 }
               >
-                Users 
+                {isSidebarOpen ? "👥 Users" : <span title="Users">👥</span>}
               </NavLink>
             </li>
             <li>
               <NavLink
                 to="/products"
                 className={({ isActive }) =>
-                  `block px-3 py-2 rounded-md text-white ${
+                  `block px-4 py-2 rounded-md text-white ${
                     isActive ? "bg-blue-600" : ""
                   } hover:bg-gray-200`
                 }
               >
-                Products
+                {isSidebarOpen ? (
+                  "📦 Products"
+                ) : (
+                  <span title="Products">📦</span>
+                )}
               </NavLink>
             </li>
           </ul>
