@@ -13,11 +13,11 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       <aside
         className={`${
           isSidebarOpen ? "w-64" : "w-20"
-        } py-4 pr-2 pl-3 border-r border-gray-200 transition-all duration-300 ease-in-out`}
+        } py-4 pr-2 pl-3 border-r border-custom-grey transition-all duration-300 ease-in-out`}
       >
         <button
           onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-          className="mb-4 p-2 rounded-md hover:bg-gray-200 transition-colors"
+          className="mb-4 p-2 rounded-md hover:bg-custom-grey transition-colors"
         >
           {isSidebarOpen ? "◀" : "▶"}
         </button>
@@ -28,8 +28,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 to="/users"
                 className={({ isActive }) =>
                   `block px-4 py-2 rounded-md text-white ${
-                    isActive ? "bg-blue-600" : ""
-                  } hover:bg-gray-200`
+                    isActive ? "bg-custom-blue" : ""
+                  } hover:bg-custom-grey`
                 }
               >
                 {isSidebarOpen ? "👥 Users" : <span title="Users">👥</span>}
@@ -40,8 +40,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 to="/products"
                 className={({ isActive }) =>
                   `block px-4 py-2 rounded-md text-white ${
-                    isActive ? "bg-blue-600" : ""
-                  } hover:bg-gray-200`
+                    isActive ? "bg-custom-blue" : ""
+                  } hover:bg-custom-grey`
                 }
               >
                 {isSidebarOpen ? (
