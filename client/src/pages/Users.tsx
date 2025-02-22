@@ -28,6 +28,7 @@ export const Users = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalUsers, setTotalUsers] = useState(0);
   const totalPages = Math.min(Math.ceil(totalUsers / entriesPerPage));
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchUsers();
@@ -49,14 +50,19 @@ export const Users = () => {
   }, [searchQuery, users]);
 
   const fetchUsers = async () => {
-    const skip = (currentPage - 1) * entriesPerPage;
-    const usersInfo = await api.users({
-      gender: selectedGender,
-      limit: entriesPerPage,
-      skip,
-    });
-    setUsers(usersInfo.users);
-    setTotalUsers(usersInfo.total);
+    setLoading(true);
+    try {
+      const skip = (currentPage - 1) * entriesPerPage;
+      const usersInfo = await api.users({
+        gender: selectedGender,
+        limit: entriesPerPage,
+        skip,
+      });
+      setUsers(usersInfo.users);
+      setTotalUsers(usersInfo.total);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handlePageChange = (page: number) => {
@@ -116,6 +122,35 @@ export const Users = () => {
       `<mark class="bg-yellow-200 rounded-sm">$1</mark>`
     );
   };
+
+  const TableSkeleton = () => (
+    <div className="animate-pulse">
+      <div className="min-w-full">
+        <div className="flex">
+          {TABLE_COLUMNS.map((column) => (
+            <div
+              key={column.key}
+              className="text-sm font-bold bg-custom-blue/50 px-3 py-3 border-r-2 border-white text-left flex-1"
+            >
+              <div className="h-4 bg-custom-blue rounded" />
+            </div>
+          ))}
+        </div>
+        {[...Array(entriesPerPage)].map((_, idx) => (
+          <div key={idx} className="flex">
+            {TABLE_COLUMNS.map((column) => (
+              <div
+                key={`${idx}-${column.key}`}
+                className="px-3 py-2 border-2 text-sm border-custom-grey flex-1"
+              >
+                <div className="h-4 bg-custom-grey/50 rounded" />
+              </div>
+            ))}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 
   return (
     <div className="p-4">
@@ -186,38 +221,42 @@ export const Users = () => {
         </div>
       </div>
       <div className="overflow-x-auto">
-        <table className="min-w-full">
-          <thead>
-            <tr>
-              {TABLE_COLUMNS.map((column) => (
-                <th
-                  key={column.key}
-                  className="text-sm font-bold bg-custom-blue px-3 py-3 border-r-2 border-white text-left"
-                >
-                  {column.label}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {filteredUsers.slice(0, entriesPerPage).map((user) => (
-              <tr key={user.username} className="hover:bg-custom-grey">
+        {loading ? (
+          <TableSkeleton />
+        ) : (
+          <table className="min-w-full">
+            <thead>
+              <tr>
                 {TABLE_COLUMNS.map((column) => (
-                  <td
-                    key={`${user.username}-${column.key}`}
-                    className="px-3 py-2 border-2 text-sm border-custom-grey"
-                    dangerouslySetInnerHTML={{
-                      __html: highlightText(
-                        String(user[column.key]),
-                        searchQuery
-                      ),
-                    }}
-                  />
+                  <th
+                    key={column.key}
+                    className="text-sm font-bold bg-custom-blue px-3 py-3 border-r-2 border-white text-left"
+                  >
+                    {column.label}
+                  </th>
                 ))}
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {filteredUsers.slice(0, entriesPerPage).map((user) => (
+                <tr key={user.username} className="hover:bg-custom-grey">
+                  {TABLE_COLUMNS.map((column) => (
+                    <td
+                      key={`${user.username}-${column.key}`}
+                      className="px-3 py-2 border-2 text-sm border-custom-grey"
+                      dangerouslySetInnerHTML={{
+                        __html: highlightText(
+                          String(user[column.key]),
+                          searchQuery
+                        ),
+                      }}
+                    />
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
 
         <div className="flex items-center justify-center gap-2 mt-16">
           <Button
