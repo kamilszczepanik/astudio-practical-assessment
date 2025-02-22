@@ -8,6 +8,7 @@ import {
 } from "../components/ui/dropdown-menu";
 import { User, TABLE_COLUMNS } from "../types/users";
 import { Button } from "../components/ui/button";
+import { TableSkeleton } from "../components/TableSkeleton";
 
 const ENTRIES_OPTIONS = [5, 10, 20, 50];
 const GENDER_OPTIONS = [
@@ -17,6 +18,7 @@ const GENDER_OPTIONS = [
 ] as const;
 
 export const Users = () => {
+  const [loading, setLoading] = useState(true);
   const [users, setUsers] = useState<User[]>([]);
   const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
   const [showSearch, setShowSearch] = useState(false);
@@ -49,14 +51,19 @@ export const Users = () => {
   }, [searchQuery, users]);
 
   const fetchUsers = async () => {
-    const skip = (currentPage - 1) * entriesPerPage;
-    const usersInfo = await api.users({
-      gender: selectedGender,
-      limit: entriesPerPage,
-      skip,
-    });
-    setUsers(usersInfo.users);
-    setTotalUsers(usersInfo.total);
+    setLoading(true);
+    try {
+      const skip = (currentPage - 1) * entriesPerPage;
+      const usersInfo = await api.users({
+        gender: selectedGender,
+        limit: entriesPerPage,
+        skip,
+      });
+      setUsers(usersInfo.users);
+      setTotalUsers(usersInfo.total);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handlePageChange = (page: number) => {
@@ -186,38 +193,42 @@ export const Users = () => {
         </div>
       </div>
       <div className="overflow-x-auto">
-        <table className="min-w-full">
-          <thead>
-            <tr>
-              {TABLE_COLUMNS.map((column) => (
-                <th
-                  key={column.key}
-                  className="text-sm font-bold bg-custom-blue px-3 py-3 border-r-2 border-white text-left"
-                >
-                  {column.label}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {filteredUsers.slice(0, entriesPerPage).map((user) => (
-              <tr key={user.username} className="hover:bg-custom-grey">
+        {loading ? (
+          <TableSkeleton rowCount={entriesPerPage} />
+        ) : (
+          <table className="min-w-full">
+            <thead>
+              <tr>
                 {TABLE_COLUMNS.map((column) => (
-                  <td
-                    key={`${user.username}-${column.key}`}
-                    className="px-3 py-2 border-2 text-sm border-custom-grey"
-                    dangerouslySetInnerHTML={{
-                      __html: highlightText(
-                        String(user[column.key]),
-                        searchQuery
-                      ),
-                    }}
-                  />
+                  <th
+                    key={column.key}
+                    className="text-sm font-bold bg-custom-blue px-3 py-3 border-r-2 border-white text-left"
+                  >
+                    {column.label}
+                  </th>
                 ))}
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {filteredUsers.slice(0, entriesPerPage).map((user) => (
+                <tr key={user.username} className="hover:bg-custom-grey">
+                  {TABLE_COLUMNS.map((column) => (
+                    <td
+                      key={`${user.username}-${column.key}`}
+                      className="px-3 py-2 border-2 text-sm border-custom-grey"
+                      dangerouslySetInnerHTML={{
+                        __html: highlightText(
+                          String(user[column.key]),
+                          searchQuery
+                        ),
+                      }}
+                    />
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
 
         <div className="flex items-center justify-center gap-2 mt-16 mb-1">
           <Button
