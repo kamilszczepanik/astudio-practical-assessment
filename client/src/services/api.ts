@@ -1,41 +1,11 @@
 import axiosInstance from "../utils/axiosInstance";
-
-interface User {
-  firstName: string;
-  lastName: string;
-  maidenName: string;
-  age: number;
-  gender: string;
-  email: string;
-  username: string;
-  bloodGroup: string;
-  eyeColor: string;
-}
-
-interface UsersResponse {
-  users: User[];
-  total: number;
-  skip: number;
-  limit: number;
-}
+import { User, UsersResponse, USER_FIELDS } from "../types/users";
 
 interface UserFilters {
   gender?: "male" | "female";
   limit?: number;
   skip?: number;
 }
-
-const USER_FIELDS = [
-  "firstName",
-  "lastName",
-  "maidenName",
-  "age",
-  "gender",
-  "email",
-  "username",
-  "bloodGroup",
-  "eyeColor",
-].join(",");
 
 const api = (() => {
   const headers = {
@@ -68,7 +38,7 @@ const api = (() => {
       const params = new URLSearchParams();
 
       // Always include field selection
-      params.append("select", USER_FIELDS);
+      params.append("select", USER_FIELDS.join(","));
 
       // Add pagination params
       if (filters?.limit) {

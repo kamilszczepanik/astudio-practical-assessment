@@ -6,6 +6,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "../components/ui/dropdown-menu";
+import { User, TABLE_COLUMNS } from "../types/users";
 
 const ENTRIES_OPTIONS = [5, 10, 20, 50];
 const GENDER_OPTIONS = [
@@ -13,18 +14,6 @@ const GENDER_OPTIONS = [
   { label: "Male", value: "male" },
   { label: "Female", value: "female" },
 ];
-
-const TABLE_COLUMNS = [
-  { key: "firstName", label: "First Name" },
-  { key: "lastName", label: "Last Name" },
-  { key: "maidenName", label: "Maiden Name" },
-  { key: "age", label: "Age" },
-  { key: "gender", label: "Gender" },
-  { key: "email", label: "Email" },
-  { key: "username", label: "Username" },
-  { key: "bloodGroup", label: "Blood Group" },
-  { key: "eyeColor", label: "Eye Color" },
-] as const;
 
 export const Users = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -34,7 +23,6 @@ export const Users = () => {
   >();
   const [currentPage, setCurrentPage] = useState(1);
   const [totalUsers, setTotalUsers] = useState(0);
-
   const totalPages = Math.min(Math.ceil(totalUsers / entriesPerPage));
 
   useEffect(() => {
