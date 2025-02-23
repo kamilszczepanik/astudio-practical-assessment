@@ -77,7 +77,7 @@ const api = (() => {
 			return response as ProductsResponse
 		},
 		filterUsers: async (
-			key: 'email' | 'firstName' | 'birthDate',
+			key: 'email' | 'firstName' | 'birthDate' | 'gender',
 			value: string,
 			filters?: { limit?: number; skip?: number },
 		): Promise<UsersResponse> => {
@@ -85,13 +85,13 @@ const api = (() => {
 
 			if (filters?.limit) params.append('limit', String(filters.limit))
 			if (filters?.skip) params.append('skip', String(filters.skip))
-			console.log(key, value, params.toString())
+
 			const url = `/users/filter?key=${key}&value=${value}&${params.toString()}`
 			const response = await get(url)
+
 			return response as UsersResponse
 		},
 		filterProducts: async (
-			key: 'title',
 			value: string,
 			filters?: { limit?: number; skip?: number },
 		): Promise<ProductsResponse> => {

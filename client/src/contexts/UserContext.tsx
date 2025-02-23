@@ -27,6 +27,7 @@ interface UserContextValue {
 	handleEmailFilter: (email: string) => Promise<void>
 	handleNameFilter: (name: string) => Promise<void>
 	handleBirthDateFilter: (date: string) => Promise<void>
+	handleGenderFilter: (gender?: 'male' | 'female') => Promise<void>
 }
 
 const UserContext = createContext<UserContextValue | undefined>(undefined)
@@ -50,7 +51,6 @@ export const UserProvider = ({ children }: UserProviderProps) => {
 		try {
 			const skip = (currentPage - 1) * itemsPerPage
 			const usersInfo = await api.users({
-				gender: selectedGender,
 				limit: itemsPerPage,
 				skip,
 			})
@@ -59,7 +59,7 @@ export const UserProvider = ({ children }: UserProviderProps) => {
 		} finally {
 			setLoading(false)
 		}
-	}, [currentPage, itemsPerPage, selectedGender])
+	}, [currentPage, itemsPerPage])
 
 	const handleEmailFilter = useCallback(
 		async (email: string) => {
@@ -118,9 +118,33 @@ export const UserProvider = ({ children }: UserProviderProps) => {
 		[fetchUsers],
 	)
 
+	const handleGenderFilter = useCallback(
+		async (gender?: 'male' | 'female') => {
+			setLoading(true)
+			try {
+				if (!gender) {
+					setSelectedGender(undefined)
+					await fetchUsers()
+					return
+				}
+
+				const usersInfo = await api.filterUsers('gender', gender, {
+					limit: itemsPerPage,
+					skip: (currentPage - 1) * itemsPerPage,
+				})
+				setSelectedGender(gender)
+				setUsers(usersInfo.users)
+				setUsersCount(usersInfo.total)
+			} finally {
+				setLoading(false)
+			}
+		},
+		[currentPage, itemsPerPage, fetchUsers],
+	)
+
 	useEffect(() => {
 		fetchUsers()
-	}, [selectedGender, itemsPerPage, currentPage, fetchUsers])
+	}, [itemsPerPage, currentPage, fetchUsers])
 
 	useEffect(() => {
 		if (searchQuery.trim() === '') {
@@ -153,6 +177,7 @@ export const UserProvider = ({ children }: UserProviderProps) => {
 		handleEmailFilter,
 		handleNameFilter,
 		handleBirthDateFilter,
+		handleGenderFilter,
 	}
 
 	return <UserContext.Provider value={value}>{children}</UserContext.Provider>
@@ -164,4 +189,4 @@ export const useUserContext = () => {
 		throw new Error('useUserContext must be used within UserProvider')
 	}
 	return context
-} 
+}

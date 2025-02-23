@@ -18,8 +18,6 @@ interface ProductContextValue {
 	currentPage: number
 	productsCount: number
 	selectedCategory?: string
-
-	// Actions
 	setLocalSearchQuery: (query: string) => void
 	setItemsPerPage: (count: number) => void
 	setCurrentPage: (page: number) => void
@@ -72,7 +70,7 @@ export const ProductProvider = ({ children }: ProductProviderProps) => {
 
 			setLoading(true)
 			try {
-				const productsInfo = await api.filterProducts('title', title, {
+				const productsInfo = await api.filterProducts(title, {
 					limit: itemsPerPage,
 					skip: (currentPage - 1) * itemsPerPage,
 				})

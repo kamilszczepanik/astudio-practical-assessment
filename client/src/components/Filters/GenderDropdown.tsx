@@ -16,17 +16,12 @@ type Gender = 'male' | 'female' | undefined
 
 interface Props {
 	selectedGender: Gender
-	setSelectedGender: (value: Gender) => void
-	setCurrentPage: (value: number) => void
+	onFilter: (gender: Gender) => Promise<void>
 }
-export const GenderDropdown = ({
-	selectedGender,
-	setSelectedGender,
-	setCurrentPage,
-}: Props) => {
-	const handleGenderChange = (value: Gender) => {
-		setSelectedGender(value)
-		setCurrentPage(1)
+
+export const GenderDropdown = ({ selectedGender, onFilter }: Props) => {
+	const handleGenderChange = async (value: Gender) => {
+		await onFilter(value)
 	}
 
 	return (

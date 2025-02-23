@@ -29,10 +29,10 @@ const Users = () => {
 		setCurrentPage,
 		usersCount,
 		selectedGender,
-		setSelectedGender,
 		handleEmailFilter,
 		handleNameFilter,
 		handleBirthDateFilter,
+		handleGenderFilter,
 	} = useUserContext()
 
 	return (
@@ -62,8 +62,7 @@ const Users = () => {
 				/>
 				<GenderDropdown
 					selectedGender={selectedGender}
-					setSelectedGender={setSelectedGender}
-					setCurrentPage={setCurrentPage}
+					onFilter={handleGenderFilter}
 				/>
 				<DateFilterInput
 					label="Filter by birth date"
