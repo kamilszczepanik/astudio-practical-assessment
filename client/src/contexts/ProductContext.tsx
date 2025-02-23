@@ -1,8 +1,39 @@
-import { useCallback, useEffect, useState } from 'react'
-import api from '../services/api'
+import {
+	createContext,
+	useContext,
+	useState,
+	useEffect,
+	useCallback,
+	ReactNode,
+} from 'react'
 import { Product } from '../types/products'
+import api from '../services/api'
 
-export const useProducts = () => {
+interface ProductContextValue {
+	loading: boolean
+	products: Product[]
+	filteredProducts: Product[]
+	localSearchQuery: string
+	itemsPerPage: number
+	currentPage: number
+	productsCount: number
+	selectedCategory?: string
+
+	// Actions
+	setLocalSearchQuery: (query: string) => void
+	setItemsPerPage: (count: number) => void
+	setCurrentPage: (page: number) => void
+	setSelectedCategory: (category?: string) => void
+	handleTitleFilter: (title: string) => Promise<void>
+}
+
+const ProductContext = createContext<ProductContextValue | undefined>(undefined)
+
+interface ProductProviderProps {
+	children: ReactNode
+}
+
+export const ProductProvider = ({ children }: ProductProviderProps) => {
 	const [loading, setLoading] = useState(true)
 	const [products, setProducts] = useState<Product[]>([])
 	const [filteredProducts, setFilteredProducts] = useState<Product[]>([])
@@ -56,7 +87,7 @@ export const useProducts = () => {
 
 	useEffect(() => {
 		fetchProducts()
-	}, [itemsPerPage, currentPage, fetchProducts])
+	}, [itemsPerPage, currentPage, selectedCategory, fetchProducts])
 
 	useEffect(() => {
 		if (localSearchQuery.trim() === '') {
@@ -73,18 +104,31 @@ export const useProducts = () => {
 		setFilteredProducts(filtered)
 	}, [localSearchQuery, products])
 
-	return {
+	const value = {
 		loading,
+		products,
 		filteredProducts,
 		localSearchQuery,
-		setLocalSearchQuery,
 		itemsPerPage,
-		setItemsPerPage,
 		currentPage,
-		setCurrentPage,
 		productsCount,
 		selectedCategory,
+		setLocalSearchQuery,
+		setItemsPerPage,
+		setCurrentPage,
 		setSelectedCategory,
 		handleTitleFilter,
 	}
+
+	return (
+		<ProductContext.Provider value={value}>{children}</ProductContext.Provider>
+	)
+}
+
+export const useProductContext = () => {
+	const context = useContext(ProductContext)
+	if (!context) {
+		throw new Error('useProductContext must be used within ProductProvider')
+	}
+	return context
 }

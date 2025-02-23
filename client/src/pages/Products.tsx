@@ -3,12 +3,21 @@ import { PageTitle } from '../components/PageTitle'
 import { SearchCurrentPageInput } from '../components/SearchInput'
 import { Pagination } from '../components/Table/Pagination'
 import { Table } from '../components/Table/Table'
-import { useProducts } from '../hooks/useProducts'
 import { PRODUCT_TABLE_COLUMNS } from '../types/products'
 import { CategoryDropdown } from '../components/Filters/CategoryDropdown'
 import { FilterInput } from '../components/Filters/FilterInput'
+import { useProductContext } from '../contexts/ProductContext'
+import { ProductProvider } from '../contexts/ProductContext'
 
-export const Products = () => {
+export const ProductsPage = () => {
+	return (
+		<ProductProvider>
+			<Products />
+		</ProductProvider>
+	)
+}
+
+const Products = () => {
 	const {
 		loading,
 		localSearchQuery,
@@ -22,7 +31,7 @@ export const Products = () => {
 		selectedCategory,
 		setSelectedCategory,
 		handleTitleFilter,
-	} = useProducts()
+	} = useProductContext()
 
 	return (
 		<div className="flex h-full flex-col">

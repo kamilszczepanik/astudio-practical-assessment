@@ -1,15 +1,23 @@
-import { useUsers } from '../hooks/useUsers'
-import { Pagination } from '../components/Table/Pagination'
-import { Table } from '../components/Table/Table'
 import { EntriesDropdown } from '../components/Filters/EntriesDropdown'
 import { PageTitle } from '../components/PageTitle'
 import { SearchCurrentPageInput } from '../components/SearchInput'
+import { Pagination } from '../components/Table/Pagination'
+import { Table } from '../components/Table/Table'
 import { GenderDropdown } from '../components/Filters/GenderDropdown'
 import { USER_TABLE_COLUMNS } from '../types/users'
 import { FilterInput } from '../components/Filters/FilterInput'
 import { DateFilterInput } from '../components/Filters/DateFilterInput'
+import { UserProvider, useUserContext } from '../contexts/UserContext'
 
-export const Users = () => {
+export const UsersPage = () => {
+	return (
+		<UserProvider>
+			<Users />
+		</UserProvider>
+	)
+}
+
+const Users = () => {
 	const {
 		loading,
 		filteredUsers,
@@ -17,15 +25,15 @@ export const Users = () => {
 		setSearchQuery,
 		itemsPerPage,
 		setItemsPerPage,
-		selectedGender,
-		setSelectedGender,
 		currentPage,
 		setCurrentPage,
 		usersCount,
+		selectedGender,
+		setSelectedGender,
 		handleEmailFilter,
 		handleNameFilter,
 		handleBirthDateFilter,
-	} = useUsers()
+	} = useUserContext()
 
 	return (
 		<div className="flex h-full flex-col">
