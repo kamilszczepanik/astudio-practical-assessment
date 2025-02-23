@@ -49,7 +49,7 @@ export function Table<T extends BaseItem>({
 						{columns.map(column => (
 							<td
 								key={`${item.id}-${String(column.key)}`}
-								className="border-custom-grey border-2 px-3 py-2 text-sm"
+								className="border-2 border-white px-3 py-2 text-sm"
 								dangerouslySetInnerHTML={{
 									__html: highlightText(String(item[column.key]), searchQuery),
 								}}

@@ -1,6 +1,6 @@
 import axiosInstance from '../utils/axiosInstance'
 import { UsersResponse, USER_FIELDS } from '../types/users'
-import { PRODUCT_FIELDS, ProductsResponse } from '../types/products'
+import { PRODUCT_FIELDS, ProductsResponse, Category } from '../types/products'
 
 interface UsersFilters {
 	gender?: 'male' | 'female'
@@ -80,6 +80,21 @@ const api = (() => {
 			const response = await get(url)
 
 			return response as ProductsResponse
+		},
+		getCategories: async (): Promise<Category[]> => {
+			const response = await get('/products/categories')
+			return response
+		},
+		getProductsByCategory: async (
+			category: string,
+			{ limit, skip }: { limit: number; skip: number }
+		): Promise<ProductsResponse> => {
+			const params = new URLSearchParams()
+			if (limit) params.append('limit', String(limit))
+			if (skip) params.append('skip', String(skip))
+
+			const response = await get(`/products/category/${category}?${params}`)
+			return response
 		},
 	}
 })()

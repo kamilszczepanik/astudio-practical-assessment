@@ -10,21 +10,27 @@ export const useProducts = () => {
 	const [itemsPerPage, setItemsPerPage] = useState(5)
 	const [currentPage, setCurrentPage] = useState(1)
 	const [productsCount, setProductsCount] = useState(0)
+	const [selectedCategory, setSelectedCategory] = useState<string | undefined>()
 
 	const fetchProducts = useCallback(async () => {
 		setLoading(true)
 		try {
 			const skip = (currentPage - 1) * itemsPerPage
-			const productsInfo = await api.products({
-				limit: itemsPerPage,
-				skip,
-			})
+			const productsInfo = selectedCategory
+				? await api.getProductsByCategory(selectedCategory, {
+						limit: itemsPerPage,
+						skip,
+				  })
+				: await api.products({
+						limit: itemsPerPage,
+						skip,
+				  })
 			setProducts(productsInfo.products)
 			setProductsCount(productsInfo.total)
 		} finally {
 			setLoading(false)
 		}
-	}, [currentPage, itemsPerPage])
+	}, [currentPage, itemsPerPage, selectedCategory])
 
 	useEffect(() => {
 		fetchProducts()
@@ -55,5 +61,7 @@ export const useProducts = () => {
 		currentPage,
 		setCurrentPage,
 		productsCount,
+		selectedCategory,
+		setSelectedCategory,
 	}
 }

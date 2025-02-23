@@ -17,3 +17,7 @@
 	--color-custom-blue: #c0e3e5;
 	--color-custom-yellow: #fdc936;
 }
+
+body {
+	background-color: var(--color-white);
+}

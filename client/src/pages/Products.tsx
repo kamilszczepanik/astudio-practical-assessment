@@ -5,6 +5,7 @@ import { Pagination } from '../components/Table/Pagination'
 import { Table } from '../components/Table/Table'
 import { useProducts } from '../hooks/useProducts'
 import { PRODUCT_TABLE_COLUMNS } from '../types/products'
+import { CategoryDropdown } from '../components/Filters/CategoryDropdown'
 
 export const Products = () => {
 	const {
@@ -17,6 +18,8 @@ export const Products = () => {
 		setCurrentPage,
 		productsCount,
 		filteredProducts,
+		selectedCategory,
+		setSelectedCategory,
 	} = useProducts()
 
 	return (
@@ -31,6 +34,11 @@ export const Products = () => {
 				<SearchInput
 					searchQuery={searchQuery}
 					setSearchQuery={setSearchQuery}
+				/>
+				<CategoryDropdown
+					selectedCategory={selectedCategory}
+					setSelectedCategory={setSelectedCategory}
+					setCurrentPage={setCurrentPage}
 				/>
 			</div>
 			<div className="flex flex-1 flex-col">
