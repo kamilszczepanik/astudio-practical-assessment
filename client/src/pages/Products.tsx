@@ -28,8 +28,6 @@ const Products = () => {
 		setCurrentPage,
 		productsCount,
 		filteredProducts,
-		selectedCategory,
-		setSelectedCategory,
 		handleTitleFilter,
 	} = useProductContext()
 
@@ -52,11 +50,7 @@ const Products = () => {
 					onFilter={handleTitleFilter}
 					placeholder="Search in all products..."
 				/>
-				<CategoryDropdown
-					selectedCategory={selectedCategory}
-					setSelectedCategory={setSelectedCategory}
-					setCurrentPage={setCurrentPage}
-				/>
+				<CategoryDropdown />
 			</div>
 			<div className="flex flex-1 flex-col">
 				<div className="flex-1">

@@ -1,3 +1,4 @@
+import { Gender } from '../../types/users'
 import { DropdownMenuItem } from '../ui/dropdown-menu'
 
 import {
@@ -12,8 +13,6 @@ const GENDER_OPTIONS = [
 	{ label: 'Female', value: 'female' as const },
 ] as const
 
-type Gender = 'male' | 'female' | undefined
-
 interface Props {
 	selectedGender: Gender
 	onFilter: (gender: Gender) => Promise<void>
@@ -27,6 +26,7 @@ export const GenderDropdown = ({ selectedGender, onFilter }: Props) => {
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger className="px-3 py-1 text-sm hover:bg-gray-50">
+				👫
 				{selectedGender
 					? selectedGender.charAt(0).toUpperCase() + selectedGender.slice(1)
 					: 'Gender'}

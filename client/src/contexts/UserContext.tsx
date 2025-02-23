@@ -6,10 +6,10 @@ import {
 	useCallback,
 	ReactNode,
 } from 'react'
-import { User } from '../types/users'
+import { Gender, User } from '../types/users'
 import api from '../services/api'
 
-interface UserContextValue {
+interface UserContextProps {
 	loading: boolean
 	users: User[]
 	filteredUsers: User[]
@@ -17,20 +17,18 @@ interface UserContextValue {
 	itemsPerPage: number
 	currentPage: number
 	usersCount: number
-	selectedGender?: 'male' | 'female'
-
-	// Actions
+	selectedGender: Gender
 	setSearchQuery: (query: string) => void
 	setItemsPerPage: (count: number) => void
 	setCurrentPage: (page: number) => void
-	setSelectedGender: (gender?: 'male' | 'female') => void
+	setSelectedGender: (gender: Gender) => void
 	handleEmailFilter: (email: string) => Promise<void>
 	handleNameFilter: (name: string) => Promise<void>
 	handleBirthDateFilter: (date: string) => Promise<void>
-	handleGenderFilter: (gender?: 'male' | 'female') => Promise<void>
+	handleGenderFilter: (gender: Gender) => Promise<void>
 }
 
-const UserContext = createContext<UserContextValue | undefined>(undefined)
+const UserContext = createContext<UserContextProps | undefined>(undefined)
 
 interface UserProviderProps {
 	children: ReactNode
@@ -44,7 +42,7 @@ export const UserProvider = ({ children }: UserProviderProps) => {
 	const [itemsPerPage, setItemsPerPage] = useState(5)
 	const [currentPage, setCurrentPage] = useState(1)
 	const [usersCount, setUsersCount] = useState(0)
-	const [selectedGender, setSelectedGender] = useState<'male' | 'female'>()
+	const [selectedGender, setSelectedGender] = useState<Gender>()
 
 	const fetchUsers = useCallback(async () => {
 		setLoading(true)
@@ -119,7 +117,7 @@ export const UserProvider = ({ children }: UserProviderProps) => {
 	)
 
 	const handleGenderFilter = useCallback(
-		async (gender?: 'male' | 'female') => {
+		async (gender: Gender) => {
 			setLoading(true)
 			try {
 				if (!gender) {

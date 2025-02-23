@@ -42,3 +42,5 @@ export interface UsersResponse {
 	skip: number
 	limit: number
 }
+
+export type Gender = 'male' | 'female' | undefined

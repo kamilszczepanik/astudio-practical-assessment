@@ -6,3 +6,12 @@
 	font-weight: normal;
 	font-style: normal;
 }
+
+@font-face {
+	font-family: 'Neutra Text';
+	src:
+		url('/src/assets/fonts/NeutraText-Bold.woff2') format('woff2'),
+		url('/src/assets/fonts/NeutraText-Bold.woff') format('woff');
+	font-weight: bold;
+	font-style: bold;
+}
