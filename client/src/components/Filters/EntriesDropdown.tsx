@@ -1,4 +1,3 @@
-import { useDynamicContext } from '../../hooks/useDynamicContext'
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -8,9 +7,17 @@ import {
 
 const ENTRIES_OPTIONS = [5, 10, 20, 50]
 
-export const EntriesDropdown = () => {
-	const { itemsPerPage, setItemsPerPage, setCurrentPage } = useDynamicContext()
+interface Props {
+	itemsPerPage: number
+	setItemsPerPage: (value: number) => void
+	setCurrentPage: (value: number) => void
+}
 
+export const EntriesDropdown = ({
+	itemsPerPage,
+	setItemsPerPage,
+	setCurrentPage,
+}: Props) => {
 	const handleEntriesChange = (value: number) => {
 		setItemsPerPage(value)
 		setCurrentPage(1)

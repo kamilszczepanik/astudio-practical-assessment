@@ -15,7 +15,7 @@ interface TableProps<T extends BaseItem> {
 	itemsPerPage: number
 	columns: Column<T>[]
 	items: T[]
-	searchQuery: string
+	localSearchQuery: string
 }
 
 export function Table<T extends BaseItem>({
@@ -23,7 +23,7 @@ export function Table<T extends BaseItem>({
 	itemsPerPage,
 	columns,
 	items,
-	searchQuery,
+	localSearchQuery,
 }: TableProps<T>) {
 	if (loading) {
 		return <TableSkeleton rowCount={itemsPerPage} columns={columns} />
@@ -51,7 +51,10 @@ export function Table<T extends BaseItem>({
 								key={`${item.id}-${String(column.key)}`}
 								className="border-2 border-white px-3 py-2 text-sm"
 								dangerouslySetInnerHTML={{
-									__html: highlightText(String(item[column.key]), searchQuery),
+									__html: highlightText(
+										String(item[column.key]),
+										localSearchQuery,
+									),
 								}}
 							/>
 						))}

@@ -6,9 +6,17 @@ import { Table } from '../components/Table/Table'
 import { PRODUCT_TABLE_COLUMNS } from '../types/products'
 import { CategoryDropdown } from '../components/Filters/CategoryDropdown'
 import { FilterInput } from '../components/Filters/FilterInput'
-import { useProductContext } from '../contexts/ProductContext'
+import { ProductProvider, useProductContext } from '../contexts/ProductContext'
 
-export const Products = () => {
+export const ProductsPage = () => {
+	return (
+		<ProductProvider>
+			<Products />
+		</ProductProvider>
+	)
+}
+
+const Products = () => {
 	const {
 		loading,
 		localSearchQuery,
@@ -19,13 +27,18 @@ export const Products = () => {
 		productsCount,
 		filteredProducts,
 		handleTitleFilter,
+		setItemsPerPage,
 	} = useProductContext()
 
 	return (
 		<div className="flex h-full flex-col">
 			<PageTitle title="Products" />
 			<div className="mb-1 flex items-center gap-2">
-				<EntriesDropdown />
+				<EntriesDropdown
+					itemsPerPage={itemsPerPage}
+					setItemsPerPage={setItemsPerPage}
+					setCurrentPage={setCurrentPage}
+				/>
 				<SearchCurrentPageInput
 					searchQuery={localSearchQuery}
 					setSearchQuery={setLocalSearchQuery}
@@ -45,7 +58,7 @@ export const Products = () => {
 						itemsPerPage={itemsPerPage}
 						columns={PRODUCT_TABLE_COLUMNS}
 						items={filteredProducts}
-						searchQuery={localSearchQuery}
+						localSearchQuery={localSearchQuery}
 					/>
 				</div>
 				<Pagination

@@ -9,7 +9,7 @@ import {
 import { Product } from '../types/products'
 import api from '../services/api'
 
-interface ProductContextValue {
+interface ProductContextProps {
 	loading: boolean
 	products: Product[]
 	filteredProducts: Product[]
@@ -25,7 +25,7 @@ interface ProductContextValue {
 	handleTitleFilter: (title: string) => Promise<void>
 }
 
-const ProductContext = createContext<ProductContextValue | undefined>(undefined)
+const ProductContext = createContext<ProductContextProps | undefined>(undefined)
 
 interface ProductProviderProps {
 	children: ReactNode

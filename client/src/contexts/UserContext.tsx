@@ -13,12 +13,12 @@ interface UserContextProps {
 	loading: boolean
 	users: User[]
 	filteredUsers: User[]
-	searchQuery: string
+	localSearchQuery: string
 	itemsPerPage: number
 	currentPage: number
 	usersCount: number
 	selectedGender: Gender
-	setSearchQuery: (query: string) => void
+	setLocalSearchQuery: (query: string) => void
 	setItemsPerPage: (count: number) => void
 	setCurrentPage: (page: number) => void
 	setSelectedGender: (gender: Gender) => void
@@ -38,7 +38,7 @@ export const UserProvider = ({ children }: UserProviderProps) => {
 	const [loading, setLoading] = useState(true)
 	const [users, setUsers] = useState<User[]>([])
 	const [filteredUsers, setFilteredUsers] = useState<User[]>([])
-	const [searchQuery, setSearchQuery] = useState('')
+	const [localSearchQuery, setLocalSearchQuery] = useState('')
 	const [itemsPerPage, setItemsPerPage] = useState(5)
 	const [currentPage, setCurrentPage] = useState(1)
 	const [usersCount, setUsersCount] = useState(0)
@@ -145,30 +145,30 @@ export const UserProvider = ({ children }: UserProviderProps) => {
 	}, [itemsPerPage, currentPage, fetchUsers])
 
 	useEffect(() => {
-		if (searchQuery.trim() === '') {
+		if (localSearchQuery.trim() === '') {
 			setFilteredUsers(users)
 			return
 		}
 
-		const query = searchQuery.toLowerCase()
+		const query = localSearchQuery.toLowerCase()
 		const filtered = users.filter(user =>
 			Object.values(user).some(value =>
 				String(value).toLowerCase().includes(query),
 			),
 		)
 		setFilteredUsers(filtered)
-	}, [searchQuery, users])
+	}, [localSearchQuery, users])
 
 	const value = {
 		loading,
 		users,
 		filteredUsers,
-		searchQuery,
+		localSearchQuery,
 		itemsPerPage,
 		currentPage,
 		usersCount,
 		selectedGender,
-		setSearchQuery,
+		setLocalSearchQuery,
 		setItemsPerPage,
 		setCurrentPage,
 		setSelectedGender,

@@ -21,11 +21,12 @@ const Users = () => {
 	const {
 		loading,
 		filteredUsers,
-		searchQuery,
-		setSearchQuery,
+		localSearchQuery,
+		setLocalSearchQuery,
 		itemsPerPage,
 		currentPage,
 		setCurrentPage,
+		setItemsPerPage,
 		usersCount,
 		selectedGender,
 		handleEmailFilter,
@@ -38,10 +39,14 @@ const Users = () => {
 		<div className="flex h-full flex-col">
 			<PageTitle title="Users" />
 			<div className="mb-1 flex items-center gap-2">
-				<EntriesDropdown />
+				<EntriesDropdown
+					itemsPerPage={itemsPerPage}
+					setItemsPerPage={setItemsPerPage}
+					setCurrentPage={setCurrentPage}
+				/>
 				<SearchCurrentPageInput
-					searchQuery={searchQuery}
-					setSearchQuery={setSearchQuery}
+					searchQuery={localSearchQuery}
+					setSearchQuery={setLocalSearchQuery}
 				/>
 				<FilterInput
 					label="Filter by name"
@@ -72,7 +77,7 @@ const Users = () => {
 						itemsPerPage={itemsPerPage}
 						columns={USER_TABLE_COLUMNS}
 						items={filteredUsers}
-						searchQuery={searchQuery}
+						localSearchQuery={localSearchQuery}
 					/>
 				</div>
 				<Pagination
