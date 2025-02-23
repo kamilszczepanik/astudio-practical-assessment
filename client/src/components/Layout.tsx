@@ -29,9 +29,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               <NavLink
                 to="/users"
                 className={({ isActive }) =>
-                  `block px-4 py-2 rounded-md text-white ${
+                  `block px-4 py-2 rounded-md text-custom-black hover:bg-custom-grey ${
                     isActive ? "bg-custom-blue" : ""
-                  } hover:bg-custom-grey text-custom-black`
+                  }`
                 }
               >
                 {isSidebarOpen ? (
@@ -45,9 +45,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               <NavLink
                 to="/products"
                 className={({ isActive }) =>
-                  `block px-4 py-2 rounded-md text-white ${
+                  `block px-4 py-2 rounded-md text-custom-black hover:bg-custom-grey ${
                     isActive ? "bg-custom-blue" : ""
-                  } hover:bg-custom-grey text-custom-black`
+                  }`
                 }
               >
                 {isSidebarOpen ? (
@@ -60,9 +60,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           </ul>
         </nav>
       </aside>
-      <div className="flex-1 flex flex-col">
-        <main className="flex-1 p-5 w-full">{children}</main>
-      </div>
+      <main className="flex-1 p-4">{children}</main>
     </div>
   );
 };

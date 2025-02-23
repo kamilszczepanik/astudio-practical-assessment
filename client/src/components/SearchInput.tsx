@@ -10,7 +10,7 @@ export const SearchInput = ({ searchQuery, setSearchQuery }: Props) => {
   const [showSearch, setShowSearch] = useState(false);
 
   return (
-    <div className="flex items-center gap-2 ml-auto">
+    <div className="flex items-center gap-2">
       <Button
         variant="ghost"
         size="icon"

@@ -1,23 +1,12 @@
 import { useEffect, useState } from "react";
 import api from "../services/api";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "../components/ui/dropdown-menu";
 import { User } from "../types/users";
 import { Pagination } from "../components/Table/Pagination";
 import { Table } from "../components/Table/Table";
-import { EntriesDropdown } from "../components/EntriesDropdown";
+import { EntriesDropdown } from "../components/Filters/EntriesDropdown";
 import { PageTitle } from "../components/PageTitle";
 import { SearchInput } from "../components/SearchInput";
-
-const GENDER_OPTIONS = [
-  { label: "All", value: undefined },
-  { label: "Male", value: "male" as const },
-  { label: "Female", value: "female" as const },
-] as const;
+import { GenderDropdown } from "../components/Filters/GenderDropdown";
 
 export const Users = () => {
   const [loading, setLoading] = useState(true);
@@ -66,15 +55,10 @@ export const Users = () => {
     }
   };
 
-  const handleGenderChange = (value: "male" | "female" | undefined) => {
-    setSelectedGender(value);
-    setCurrentPage(1);
-  };
-
   return (
-    <div className="p-4">
+    <>
       <PageTitle title="Users" />
-      <div className="flex items-center gap-4 mb-2">
+      <div className="flex">
         <EntriesDropdown
           itemsPerPage={itemsPerPage}
           setItemsPerPage={setItemsPerPage}
@@ -84,41 +68,24 @@ export const Users = () => {
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
         />
-
-        <DropdownMenu>
-          <DropdownMenuTrigger className="px-3 py-1 text-sm hover:bg-gray-50">
-            {selectedGender
-              ? selectedGender.charAt(0).toUpperCase() + selectedGender.slice(1)
-              : "Gender"}
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            {GENDER_OPTIONS.map((option) => (
-              <DropdownMenuItem
-                key={option.label}
-                onClick={() => handleGenderChange(option.value)}
-                className="cursor-pointer"
-              >
-                {option.label}
-              </DropdownMenuItem>
-            ))}
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
-      <div className="overflow-x-auto">
-        <Table
-          loading={loading}
-          itemsPerPage={itemsPerPage}
-          filteredUsers={filteredUsers}
-          searchQuery={searchQuery}
-        />
-
-        <Pagination
-          totalItems={usersCount}
-          itemsPerPage={itemsPerPage}
-          currentPage={currentPage}
+        <GenderDropdown
+          selectedGender={selectedGender}
+          setSelectedGender={setSelectedGender}
           setCurrentPage={setCurrentPage}
         />
       </div>
-    </div>
+      <Table
+        loading={loading}
+        itemsPerPage={itemsPerPage}
+        filteredUsers={filteredUsers}
+        searchQuery={searchQuery}
+      />
+      <Pagination
+        totalItems={usersCount}
+        itemsPerPage={itemsPerPage}
+        currentPage={currentPage}
+        setCurrentPage={setCurrentPage}
+      />
+    </>
   );
 };
