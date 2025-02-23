@@ -88,7 +88,10 @@ export const ProductProvider = ({ children }: ProductProviderProps) => {
 	}, [itemsPerPage, currentPage, selectedCategory, fetchProducts])
 
 	useEffect(() => {
-		if (!localSearchQuery.trim()) return
+		if (!localSearchQuery.trim()) {
+			setFilteredProducts(products)
+			return
+		}
 
 		const query = localSearchQuery.toLowerCase()
 		const filtered = products.filter(product =>
