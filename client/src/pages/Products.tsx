@@ -1,15 +1,22 @@
 import { EntriesDropdown } from '../components/Filters/EntriesDropdown'
 import { PageTitle } from '../components/PageTitle'
 import { SearchInput } from '../components/SearchInput'
+import { Pagination } from '../components/Table/Pagination'
+import { Table } from '../components/Table/Table'
 import { useProducts } from '../hooks/useProducts'
+import { PRODUCT_TABLE_COLUMNS } from '../types/products'
 
 export const Products = () => {
 	const {
+		loading,
 		searchQuery,
 		setSearchQuery,
 		itemsPerPage,
 		setItemsPerPage,
+		currentPage,
 		setCurrentPage,
+		productsCount,
+		filteredProducts,
 	} = useProducts()
 
 	return (
@@ -26,22 +33,23 @@ export const Products = () => {
 					setSearchQuery={setSearchQuery}
 				/>
 			</div>
-			{/* <div className="flex flex-1 flex-col">
+			<div className="flex flex-1 flex-col">
 				<div className="flex-1">
 					<Table
 						loading={loading}
 						itemsPerPage={itemsPerPage}
-						filteredUsers={filteredUsers}
+						columns={PRODUCT_TABLE_COLUMNS}
+						items={filteredProducts}
 						searchQuery={searchQuery}
 					/>
 				</div>
 				<Pagination
-					totalItems={usersCount}
+					totalItems={productsCount}
 					itemsPerPage={itemsPerPage}
 					currentPage={currentPage}
 					setCurrentPage={setCurrentPage}
 				/>
-			</div> */}
+			</div>
 		</div>
 	)
 }

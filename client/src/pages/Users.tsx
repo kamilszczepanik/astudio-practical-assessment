@@ -5,6 +5,7 @@ import { EntriesDropdown } from '../components/Filters/EntriesDropdown'
 import { PageTitle } from '../components/PageTitle'
 import { SearchInput } from '../components/SearchInput'
 import { GenderDropdown } from '../components/Filters/GenderDropdown'
+import { USER_TABLE_COLUMNS } from '../types/users'
 
 export const Users = () => {
 	const {
@@ -45,7 +46,8 @@ export const Users = () => {
 					<Table
 						loading={loading}
 						itemsPerPage={itemsPerPage}
-						filteredUsers={filteredUsers}
+						columns={USER_TABLE_COLUMNS}
+						items={filteredUsers}
 						searchQuery={searchQuery}
 					/>
 				</div>

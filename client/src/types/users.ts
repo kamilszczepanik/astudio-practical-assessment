@@ -16,6 +16,7 @@ export const USER_FIELDS = [
 export type UserField = (typeof USER_FIELDS)[number]
 
 export interface User {
+	id: number
 	firstName: string
 	lastName: string
 	maidenName: string
@@ -30,7 +31,7 @@ export interface User {
 	weight: number
 }
 
-export const TABLE_COLUMNS = USER_FIELDS.map(field => ({
+export const USER_TABLE_COLUMNS = USER_FIELDS.map(field => ({
 	key: field,
 	label: field.replace(/([A-Z])/g, ' $1').toUpperCase(),
 }))
