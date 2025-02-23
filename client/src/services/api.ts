@@ -28,17 +28,6 @@ const api = (() => {
 		}
 	}
 
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	async function post(url: string, body: object = {}): Promise<unknown> {
-		try {
-			const response = await axiosInstance.post(url, body, { headers })
-			return response.data
-		} catch (error) {
-			console.error(`POST ${url} failed:`, error)
-			throw error
-		}
-	}
-
 	return {
 		users: async (filters?: UsersFilters): Promise<UsersResponse> => {
 			const params = new URLSearchParams()
@@ -81,34 +70,48 @@ const api = (() => {
 
 			return response as ProductsResponse
 		},
-		getCategories: async (): Promise<Category[]> => {
+		productsCategories: async (): Promise<Category[]> => {
 			const response = await get('/products/categories')
-			return response
+			return response as Category[]
 		},
-		getProductsByCategory: async (
+		productsByCategory: async (
 			category: string,
-			{ limit, skip }: { limit: number; skip: number }
+			{ limit, skip }: { limit: number; skip: number },
 		): Promise<ProductsResponse> => {
 			const params = new URLSearchParams()
 			if (limit) params.append('limit', String(limit))
 			if (skip) params.append('skip', String(skip))
 
 			const response = await get(`/products/category/${category}?${params}`)
-			return response
+			return response as ProductsResponse
 		},
 		filterUsers: async (
-			key: 'email' | 'firstName',
+			key: 'email' | 'firstName' | 'birthDate',
 			value: string,
-			filters?: { limit?: number; skip?: number }
+			filters?: { limit?: number; skip?: number },
 		): Promise<UsersResponse> => {
 			const params = new URLSearchParams()
-			
+
 			if (filters?.limit) params.append('limit', String(filters.limit))
 			if (filters?.skip) params.append('skip', String(filters.skip))
-
+			console.log(key, value, params.toString())
 			const url = `/users/filter?key=${key}&value=${value}&${params.toString()}`
 			const response = await get(url)
 			return response as UsersResponse
+		},
+		filterProducts: async (
+			key: 'title',
+			value: string,
+			filters?: { limit?: number; skip?: number },
+		): Promise<ProductsResponse> => {
+			const params = new URLSearchParams()
+
+			if (filters?.limit) params.append('limit', String(filters.limit))
+			if (filters?.skip) params.append('skip', String(filters.skip))
+
+			const url = `/products/search?q=${value}&${params.toString()}`
+			const response = await get(url)
+			return response as ProductsResponse
 		},
 	}
 })()

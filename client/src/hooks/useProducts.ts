@@ -4,9 +4,9 @@ import { Product } from '../types/products'
 
 export const useProducts = () => {
 	const [loading, setLoading] = useState(true)
-	const [users, setProducts] = useState<Product[]>([])
+	const [products, setProducts] = useState<Product[]>([])
 	const [filteredProducts, setFilteredProducts] = useState<Product[]>([])
-	const [searchQuery, setSearchQuery] = useState('')
+	const [localSearchQuery, setLocalSearchQuery] = useState('')
 	const [itemsPerPage, setItemsPerPage] = useState(5)
 	const [currentPage, setCurrentPage] = useState(1)
 	const [productsCount, setProductsCount] = useState(0)
@@ -17,14 +17,14 @@ export const useProducts = () => {
 		try {
 			const skip = (currentPage - 1) * itemsPerPage
 			const productsInfo = selectedCategory
-				? await api.getProductsByCategory(selectedCategory, {
+				? await api.productsByCategory(selectedCategory, {
 						limit: itemsPerPage,
 						skip,
-				  })
+					})
 				: await api.products({
 						limit: itemsPerPage,
 						skip,
-				  })
+					})
 			setProducts(productsInfo.products)
 			setProductsCount(productsInfo.total)
 		} finally {
@@ -32,30 +32,52 @@ export const useProducts = () => {
 		}
 	}, [currentPage, itemsPerPage, selectedCategory])
 
+	const handleTitleFilter = useCallback(
+		async (title: string) => {
+			if (!title.trim()) {
+				fetchProducts()
+				return
+			}
+
+			setLoading(true)
+			try {
+				const productsInfo = await api.filterProducts('name', title, {
+					limit: itemsPerPage,
+					skip: (currentPage - 1) * itemsPerPage,
+				})
+				setProducts(productsInfo.products)
+				setProductsCount(productsInfo.total)
+			} finally {
+				setLoading(false)
+			}
+		},
+		[currentPage, itemsPerPage, fetchProducts],
+	)
+
 	useEffect(() => {
 		fetchProducts()
 	}, [itemsPerPage, currentPage, fetchProducts])
 
 	useEffect(() => {
-		if (searchQuery.trim() === '') {
-			setFilteredProducts(users)
+		if (localSearchQuery.trim() === '') {
+			setFilteredProducts(products)
 			return
 		}
 
-		const query = searchQuery.toLowerCase()
-		const filtered = users.filter(user =>
-			Object.values(user).some(value =>
+		const query = localSearchQuery.toLowerCase()
+		const filtered = products.filter(product =>
+			Object.values(product).some(value =>
 				String(value).toLowerCase().includes(query),
 			),
 		)
 		setFilteredProducts(filtered)
-	}, [searchQuery, users])
+	}, [localSearchQuery, products])
 
 	return {
 		loading,
 		filteredProducts,
-		searchQuery,
-		setSearchQuery,
+		localSearchQuery,
+		setLocalSearchQuery,
 		itemsPerPage,
 		setItemsPerPage,
 		currentPage,
@@ -63,5 +85,6 @@ export const useProducts = () => {
 		productsCount,
 		selectedCategory,
 		setSelectedCategory,
+		handleTitleFilter,
 	}
 }

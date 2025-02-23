@@ -4,9 +4,14 @@ import { Button } from './ui/button'
 interface Props {
 	searchQuery: string
 	setSearchQuery: (query: string) => void
+	placeholder?: string
 }
 
-export const SearchInput = ({ searchQuery, setSearchQuery }: Props) => {
+export const SearchCurrentPageInput = ({
+	searchQuery,
+	setSearchQuery,
+	placeholder = 'Search current page...',
+}: Props) => {
 	const [showSearch, setShowSearch] = useState(false)
 
 	return (
@@ -23,7 +28,7 @@ export const SearchInput = ({ searchQuery, setSearchQuery }: Props) => {
 					type="text"
 					value={searchQuery}
 					onChange={e => setSearchQuery(e.target.value)}
-					placeholder="Search current page..."
+					placeholder={placeholder}
 					className="rounded border px-3 py-1 text-sm"
 					autoFocus
 				/>

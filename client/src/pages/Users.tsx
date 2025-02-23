@@ -3,10 +3,11 @@ import { Pagination } from '../components/Table/Pagination'
 import { Table } from '../components/Table/Table'
 import { EntriesDropdown } from '../components/Filters/EntriesDropdown'
 import { PageTitle } from '../components/PageTitle'
-import { SearchInput } from '../components/SearchInput'
+import { SearchCurrentPageInput } from '../components/SearchInput'
 import { GenderDropdown } from '../components/Filters/GenderDropdown'
 import { USER_TABLE_COLUMNS } from '../types/users'
 import { FilterInput } from '../components/Filters/FilterInput'
+import { DateFilterInput } from '../components/Filters/DateFilterInput'
 
 export const Users = () => {
 	const {
@@ -23,18 +24,19 @@ export const Users = () => {
 		usersCount,
 		handleEmailFilter,
 		handleNameFilter,
+		handleBirthDateFilter,
 	} = useUsers()
 
 	return (
 		<div className="flex h-full flex-col">
 			<PageTitle title="Users" />
-			<div className="flex items-center gap-2">
+			<div className="mb-1 flex items-center gap-2">
 				<EntriesDropdown
 					itemsPerPage={itemsPerPage}
 					setItemsPerPage={setItemsPerPage}
 					setCurrentPage={setCurrentPage}
 				/>
-				<SearchInput
+				<SearchCurrentPageInput
 					searchQuery={searchQuery}
 					setSearchQuery={setSearchQuery}
 				/>
@@ -54,6 +56,11 @@ export const Users = () => {
 					selectedGender={selectedGender}
 					setSelectedGender={setSelectedGender}
 					setCurrentPage={setCurrentPage}
+				/>
+				<DateFilterInput
+					label="Filter by birth date"
+					title="📅 Birth Date"
+					onFilter={handleBirthDateFilter}
 				/>
 			</div>
 			<div className="flex flex-1 flex-col">
