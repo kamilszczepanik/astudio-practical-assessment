@@ -1,8 +1,8 @@
-import { Link } from "react-router-dom";
+import { Link } from 'react-router-dom'
 
 export const Home = () => (
-  <div className="users-page">
-    <Link to="/users">Users</Link>
-    <Link to="/products">Products</Link>
-  </div>
-);
+	<div className="users-page">
+		<Link to="/users">Users</Link>
+		<Link to="/products">Products</Link>
+	</div>
+)

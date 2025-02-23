@@ -1,19 +1,19 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 :root {
-  font-family: "Neutra Text", system-ui, sans-serif;
+	font-family: 'Neutra Text', system-ui, sans-serif;
 
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+	font-synthesis: none;
+	text-rendering: optimizeLegibility;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
 }
 
 @theme {
-  --color-*: initial;
-  --color-white: #fff;
-  --color-custom-black: #322625;
-  --color-custom-grey: #ebebeb;
-  --color-custom-blue: #c0e3e5;
-  --color-custom-yellow: #fdc936;
+	--color-*: initial;
+	--color-white: #fff;
+	--color-custom-black: #322625;
+	--color-custom-grey: #ebebeb;
+	--color-custom-blue: #c0e3e5;
+	--color-custom-yellow: #fdc936;
 }
