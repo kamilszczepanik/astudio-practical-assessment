@@ -21,6 +21,11 @@ export const CategoryDropdown = ({
 }: CategoryDropdownProps) => {
 	const [categories, setCategories] = useState<Category[]>([])
 
+	const handleCategoryChange = (category?: string) => {
+		setSelectedCategory(category)
+		setCurrentPage(1)
+	}
+
 	useEffect(() => {
 		const fetchCategories = async () => {
 			const categoriesData = await api.productsCategories()
@@ -28,11 +33,6 @@ export const CategoryDropdown = ({
 		}
 		fetchCategories()
 	}, [])
-
-	const handleCategoryChange = (category?: string) => {
-		setSelectedCategory(category)
-		setCurrentPage(1)
-	}
 
 	return (
 		<DropdownMenu>

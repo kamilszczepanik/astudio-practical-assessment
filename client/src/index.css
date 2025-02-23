@@ -1,7 +1,7 @@
 @import 'tailwindcss';
 
 :root {
-	font-family: 'Neutra Text', system-ui, sans-serif;
+	font-family: 'NeutraText-Book', system-ui, sans-serif;
 
 	font-synthesis: none;
 	text-rendering: optimizeLegibility;

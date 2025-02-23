@@ -23,28 +23,23 @@ export const Pagination = ({
 		const maxVisibleButtons = 5
 		const array = []
 
-		if (totalPagesCount <= maxVisibleButtons) {
+		if (totalPagesCount <= maxVisibleButtons)
 			return Array.from({ length: totalPagesCount }, (_, i) => i + 1)
-		}
 
 		if (currentPage <= 3) {
-			for (let i = 1; i <= 4; i++) {
-				array.push(i)
-			}
+			for (let i = 1; i <= 4; i++) array.push(i)
 			array.push('...')
 			array.push(totalPagesCount)
 		} else if (currentPage >= totalPagesCount - 2) {
 			array.push(1)
 			array.push('...')
-			for (let i = totalPagesCount - 3; i <= totalPagesCount; i++) {
+			for (let i = totalPagesCount - 3; i <= totalPagesCount; i++)
 				array.push(i)
-			}
 		} else {
 			array.push(1)
 			array.push('...')
-			for (let i = currentPage - 1; i <= currentPage + 1; i++) {
+			for (let i = currentPage - 1; i <= currentPage + 1; i++)
 				array.push(i)
-			}
 			array.push('...')
 			array.push(totalPagesCount)
 		}

@@ -34,20 +34,15 @@ const api = (() => {
 
 			params.append('select', USER_FIELDS.join(','))
 
-			if (filters?.limit) {
-				params.append('limit', String(filters.limit))
-			}
-			if (filters?.skip) {
-				params.append('skip', String(filters.skip))
-			}
+			if (filters?.limit) params.append('limit', String(filters.limit))
+			if (filters?.skip) params.append('skip', String(filters.skip))
 
 			let url = `/users?${params.toString()}`
 
-			if (filters?.gender) {
+			if (filters?.gender)
 				url = `/users/filter?key=gender&value=${
 					filters.gender
 				}&${params.toString()}`
-			}
 
 			const response = await get(url)
 
@@ -58,12 +53,8 @@ const api = (() => {
 
 			params.append('select', PRODUCT_FIELDS.join(','))
 
-			if (filters?.limit) {
-				params.append('limit', String(filters.limit))
-			}
-			if (filters?.skip) {
-				params.append('skip', String(filters.skip))
-			}
+			if (filters?.limit) params.append('limit', String(filters.limit))
+			if (filters?.skip) params.append('skip', String(filters.skip))
 
 			const url = `/products?${params.toString()}`
 			const response = await get(url)
