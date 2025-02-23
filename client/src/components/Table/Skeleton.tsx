@@ -1,4 +1,4 @@
-import { TABLE_COLUMNS } from "../types/users";
+import { TABLE_COLUMNS } from "../../types/users";
 
 interface TableSkeletonProps {
   rowCount: number;
@@ -31,4 +31,4 @@ export const TableSkeleton = ({ rowCount }: TableSkeletonProps) => (
       ))}
     </div>
   </div>
-); 
+);

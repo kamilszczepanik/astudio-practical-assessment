@@ -1,16 +1,30 @@
 import { Button } from "../ui/button";
-import { useTable } from "../../context/TableContext";
 
-export const Pagination = () => {
-  const { currentPage, setCurrentPage, totalItems, entriesPerPage } = useTable();
-  const totalPages = Math.ceil(totalItems / entriesPerPage);
+interface Props {
+  totalItems: number;
+  itemsPerPage: number;
+  currentPage: number;
+  setCurrentPage: (page: number) => void;
+}
+
+export const Pagination = ({
+  totalItems,
+  itemsPerPage,
+  currentPage,
+  setCurrentPage,
+}: Props) => {
+  const totalPagesCount = Math.ceil(totalItems / itemsPerPage);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
 
   const getPageNumbers = () => {
     const maxVisibleButtons = 5;
     const array = [];
 
-    if (totalPages <= maxVisibleButtons) {
-      return Array.from({ length: totalPages }, (_, i) => i + 1);
+    if (totalPagesCount <= maxVisibleButtons) {
+      return Array.from({ length: totalPagesCount }, (_, i) => i + 1);
     }
 
     if (currentPage <= 3) {
@@ -18,11 +32,11 @@ export const Pagination = () => {
         array.push(i);
       }
       array.push("...");
-      array.push(totalPages);
-    } else if (currentPage >= totalPages - 2) {
+      array.push(totalPagesCount);
+    } else if (currentPage >= totalPagesCount - 2) {
       array.push(1);
       array.push("...");
-      for (let i = totalPages - 3; i <= totalPages; i++) {
+      for (let i = totalPagesCount - 3; i <= totalPagesCount; i++) {
         array.push(i);
       }
     } else {
@@ -32,7 +46,7 @@ export const Pagination = () => {
         array.push(i);
       }
       array.push("...");
-      array.push(totalPages);
+      array.push(totalPagesCount);
     }
 
     return array;
@@ -43,7 +57,7 @@ export const Pagination = () => {
       <Button
         variant="ghost"
         size="sm"
-        onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+        onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
         disabled={currentPage === 1}
       >
         ←
@@ -59,7 +73,7 @@ export const Pagination = () => {
             key={`page-${pageNumber}`}
             variant="ghost"
             size="sm"
-            onClick={() => setCurrentPage(pageNumber as number)}
+            onClick={() => handlePageChange(pageNumber as number)}
             className={currentPage === pageNumber ? "pb-4" : ""}
           >
             {pageNumber}
@@ -70,11 +84,13 @@ export const Pagination = () => {
       <Button
         variant="ghost"
         size="sm"
-        onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
-        disabled={currentPage === totalPages}
+        onClick={() =>
+          handlePageChange(Math.min(totalPagesCount, currentPage + 1))
+        }
+        disabled={currentPage === totalPagesCount}
       >
         →
       </Button>
     </div>
   );
-}; 
+};

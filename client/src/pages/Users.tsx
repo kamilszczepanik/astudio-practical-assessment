@@ -8,7 +8,8 @@ import {
 } from "../components/ui/dropdown-menu";
 import { User, TABLE_COLUMNS } from "../types/users";
 import { Button } from "../components/ui/button";
-import { TableSkeleton } from "../components/TableSkeleton";
+import { TableSkeleton } from "../components/Table/Skeleton";
+import { Pagination } from "../components/Table/Pagination";
 
 const ENTRIES_OPTIONS = [5, 10, 20, 50];
 const GENDER_OPTIONS = [
@@ -23,17 +24,16 @@ export const Users = () => {
   const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
   const [showSearch, setShowSearch] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [entriesPerPage, setEntriesPerPage] = useState(5);
+  const [itemsPerPage, setItemsPerPage] = useState(5);
   const [selectedGender, setSelectedGender] = useState<
     "male" | "female" | undefined
   >();
   const [currentPage, setCurrentPage] = useState(1);
-  const [totalUsers, setTotalUsers] = useState(0);
-  const totalPages = Math.min(Math.ceil(totalUsers / entriesPerPage));
+  const [usersCount, setUsersCount] = useState(0);
 
   useEffect(() => {
     fetchUsers();
-  }, [selectedGender, entriesPerPage, currentPage]);
+  }, [selectedGender, itemsPerPage, currentPage]);
 
   useEffect(() => {
     if (searchQuery.trim() === "") {
@@ -53,21 +53,17 @@ export const Users = () => {
   const fetchUsers = async () => {
     setLoading(true);
     try {
-      const skip = (currentPage - 1) * entriesPerPage;
+      const skip = (currentPage - 1) * itemsPerPage;
       const usersInfo = await api.users({
         gender: selectedGender,
-        limit: entriesPerPage,
+        limit: itemsPerPage,
         skip,
       });
       setUsers(usersInfo.users);
-      setTotalUsers(usersInfo.total);
+      setUsersCount(usersInfo.total);
     } finally {
       setLoading(false);
     }
-  };
-
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
   };
 
   const handleGenderChange = (value: "male" | "female" | undefined) => {
@@ -76,42 +72,8 @@ export const Users = () => {
   };
 
   const handleEntriesChange = (value: number) => {
-    setEntriesPerPage(value);
+    setItemsPerPage(value);
     setCurrentPage(1);
-  };
-
-  const getPageNumbers = () => {
-    const totalPageCount = Math.ceil(totalUsers / entriesPerPage);
-    const maxVisibleButtons = 5;
-    const array = [];
-
-    if (totalPageCount <= maxVisibleButtons) {
-      return Array.from({ length: totalPageCount }, (_, i) => i + 1);
-    }
-
-    if (currentPage <= 3) {
-      for (let i = 1; i <= 4; i++) {
-        array.push(i);
-      }
-      array.push("...");
-      array.push(totalPageCount);
-    } else if (currentPage >= totalPageCount - 2) {
-      array.push(1);
-      array.push("...");
-      for (let i = totalPageCount - 3; i <= totalPageCount; i++) {
-        array.push(i);
-      }
-    } else {
-      array.push(1);
-      array.push("...");
-      for (let i = currentPage - 1; i <= currentPage + 1; i++) {
-        array.push(i);
-      }
-      array.push("...");
-      array.push(totalPageCount);
-    }
-
-    return array;
   };
 
   const highlightText = (text: string, query: string) => {
@@ -133,7 +95,7 @@ export const Users = () => {
         <div className="flex items-center gap-2">
           <DropdownMenu>
             <DropdownMenuTrigger className="px-3 py-1 text-sm rounded hover:bg-gray-50">
-              {entriesPerPage}
+              {itemsPerPage}
             </DropdownMenuTrigger>
             <DropdownMenuContent>
               {ENTRIES_OPTIONS.map((option) => (
@@ -194,7 +156,7 @@ export const Users = () => {
       </div>
       <div className="overflow-x-auto">
         {loading ? (
-          <TableSkeleton rowCount={entriesPerPage} />
+          <TableSkeleton rowCount={itemsPerPage} />
         ) : (
           <table className="min-w-full">
             <thead>
@@ -210,7 +172,7 @@ export const Users = () => {
               </tr>
             </thead>
             <tbody>
-              {filteredUsers.slice(0, entriesPerPage).map((user) => (
+              {filteredUsers.slice(0, itemsPerPage).map((user) => (
                 <tr key={user.username} className="hover:bg-custom-grey">
                   {TABLE_COLUMNS.map((column) => (
                     <td
@@ -230,45 +192,12 @@ export const Users = () => {
           </table>
         )}
 
-        <div className="flex items-center justify-center gap-2 mt-16 mb-1">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
-            disabled={currentPage === 1}
-          >
-            ←
-          </Button>
-
-          {getPageNumbers().map((pageNumber, idx) =>
-            pageNumber === "..." ? (
-              <span key={`ellipsis-${idx}`} className="px-3 py-1">
-                ...
-              </span>
-            ) : (
-              <Button
-                key={`page-${pageNumber}`}
-                variant="ghost"
-                size="sm"
-                onClick={() => handlePageChange(pageNumber as number)}
-                className={currentPage === pageNumber ? "pb-4" : ""}
-              >
-                {pageNumber}
-              </Button>
-            )
-          )}
-
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() =>
-              handlePageChange(Math.min(totalPages, currentPage + 1))
-            }
-            disabled={currentPage === totalPages}
-          >
-            →
-          </Button>
-        </div>
+        <Pagination
+          totalItems={usersCount}
+          itemsPerPage={itemsPerPage}
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
+        />
       </div>
     </div>
   );
