@@ -29,32 +29,26 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 							<NavLink
 								to="/users"
 								className={({ isActive }) =>
-									`text-custom-black hover:bg-custom-black/20 block rounded-md px-4 py-2 ${
+									`text-custom-black hover:bg-custom-black/20 flex items-center gap-2 rounded-md px-4 py-2 ${
 										isActive ? 'bg-custom-blue' : ''
 									}`
 								}
 							>
-								{isSidebarOpen ? (
-									<span className="text-custom-black">👥 Users</span>
-								) : (
-									<span title="Users">👥</span>
-								)}
+								<span>👥</span>
+								{isSidebarOpen && <span>Users</span>}
 							</NavLink>
 						</li>
 						<li>
 							<NavLink
 								to="/products"
 								className={({ isActive }) =>
-									`text-custom-black hover:bg-custom-black/20 block rounded-md px-4 py-2 ${
+									`text-custom-black hover:bg-custom-black/20 flex items-center gap-2 rounded-md px-4 py-2 ${
 										isActive ? 'bg-custom-blue' : ''
 									}`
 								}
 							>
-								{isSidebarOpen ? (
-									<span className="text-custom-black">📦 Products</span>
-								) : (
-									<span title="Products">📦</span>
-								)}
+								<span>📦</span>
+								{isSidebarOpen && <span>Products</span>}
 							</NavLink>
 						</li>
 					</ul>

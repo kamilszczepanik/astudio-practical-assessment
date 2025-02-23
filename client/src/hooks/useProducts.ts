@@ -41,7 +41,7 @@ export const useProducts = () => {
 
 			setLoading(true)
 			try {
-				const productsInfo = await api.filterProducts('name', title, {
+				const productsInfo = await api.filterProducts('title', title, {
 					limit: itemsPerPage,
 					skip: (currentPage - 1) * itemsPerPage,
 				})
