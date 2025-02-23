@@ -24,7 +24,6 @@ const Users = () => {
 		searchQuery,
 		setSearchQuery,
 		itemsPerPage,
-		setItemsPerPage,
 		currentPage,
 		setCurrentPage,
 		usersCount,
@@ -39,11 +38,7 @@ const Users = () => {
 		<div className="flex h-full flex-col">
 			<PageTitle title="Users" />
 			<div className="mb-1 flex items-center gap-2">
-				<EntriesDropdown
-					itemsPerPage={itemsPerPage}
-					setItemsPerPage={setItemsPerPage}
-					setCurrentPage={setCurrentPage}
-				/>
+				<EntriesDropdown />
 				<SearchCurrentPageInput
 					searchQuery={searchQuery}
 					setSearchQuery={setSearchQuery}
