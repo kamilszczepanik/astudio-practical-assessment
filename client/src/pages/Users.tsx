@@ -6,6 +6,7 @@ import { PageTitle } from '../components/PageTitle'
 import { SearchInput } from '../components/SearchInput'
 import { GenderDropdown } from '../components/Filters/GenderDropdown'
 import { USER_TABLE_COLUMNS } from '../types/users'
+import { FilterInput } from '../components/Filters/FilterInput'
 
 export const Users = () => {
 	const {
@@ -20,12 +21,14 @@ export const Users = () => {
 		currentPage,
 		setCurrentPage,
 		usersCount,
+		handleEmailFilter,
+		handleNameFilter,
 	} = useUsers()
 
 	return (
 		<div className="flex h-full flex-col">
 			<PageTitle title="Users" />
-			<div className="flex">
+			<div className="flex items-center gap-2">
 				<EntriesDropdown
 					itemsPerPage={itemsPerPage}
 					setItemsPerPage={setItemsPerPage}
@@ -34,6 +37,18 @@ export const Users = () => {
 				<SearchInput
 					searchQuery={searchQuery}
 					setSearchQuery={setSearchQuery}
+				/>
+				<FilterInput
+					label="Filter by name"
+					title="👤 Name"
+					onFilter={handleNameFilter}
+					placeholder="Enter name..."
+				/>
+				<FilterInput
+					label="Filter by email"
+					title="✉️ Email"
+					onFilter={handleEmailFilter}
+					placeholder="Enter email..."
 				/>
 				<GenderDropdown
 					selectedGender={selectedGender}

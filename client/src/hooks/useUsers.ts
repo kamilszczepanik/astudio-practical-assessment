@@ -47,6 +47,38 @@ export const useUsers = () => {
     setFilteredUsers(filtered)
   }, [searchQuery, users])
 
+  const handleEmailFilter = useCallback(async (email: string) => {
+    if (!email.trim()) {
+      fetchUsers() // Reset to normal fetch if filter is empty
+      return
+    }
+
+    setLoading(true)
+    try {
+      const response = await api.filterUsers('email', email)
+      setUsers(response.users)
+      setUsersCount(response.total)
+    } finally {
+      setLoading(false)
+    }
+  }, [fetchUsers])
+
+  const handleNameFilter = useCallback(async (name: string) => {
+    if (!name.trim()) {
+      fetchUsers() // Reset to normal fetch if filter is empty
+      return
+    }
+
+    setLoading(true)
+    try {
+      const response = await api.filterUsers('firstName', name)
+      setUsers(response.users)
+      setUsersCount(response.total)
+    } finally {
+      setLoading(false)
+    }
+  }, [fetchUsers])
+
   return {
     loading,
     filteredUsers,
@@ -59,5 +91,7 @@ export const useUsers = () => {
     currentPage,
     setCurrentPage,
     usersCount,
+    handleEmailFilter,
+    handleNameFilter,
   }
 } 

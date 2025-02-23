@@ -96,6 +96,20 @@ const api = (() => {
 			const response = await get(`/products/category/${category}?${params}`)
 			return response
 		},
+		filterUsers: async (
+			key: 'email' | 'firstName',
+			value: string,
+			filters?: { limit?: number; skip?: number }
+		): Promise<UsersResponse> => {
+			const params = new URLSearchParams()
+			
+			if (filters?.limit) params.append('limit', String(filters.limit))
+			if (filters?.skip) params.append('skip', String(filters.skip))
+
+			const url = `/users/filter?key=${key}&value=${value}&${params.toString()}`
+			const response = await get(url)
+			return response as UsersResponse
+		},
 	}
 })()
 

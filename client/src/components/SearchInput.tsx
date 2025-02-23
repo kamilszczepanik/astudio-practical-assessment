@@ -23,7 +23,7 @@ export const SearchInput = ({ searchQuery, setSearchQuery }: Props) => {
 					type="text"
 					value={searchQuery}
 					onChange={e => setSearchQuery(e.target.value)}
-					placeholder="Search..."
+					placeholder="Search current page..."
 					className="rounded border px-3 py-1 text-sm"
 					autoFocus
 				/>
