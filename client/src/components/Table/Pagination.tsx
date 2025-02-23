@@ -53,44 +53,46 @@ export const Pagination = ({
 	}
 
 	return (
-		<div className="mt-16 mb-1 flex items-center justify-center gap-2">
-			<Button
-				variant="ghost"
-				size="sm"
-				onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
-				disabled={currentPage === 1}
-			>
-				←
-			</Button>
+		<div className="sticky bottom-0 bg-white py-4 shadow-md">
+			<div className="flex items-center justify-center gap-2">
+				<Button
+					variant="ghost"
+					size="sm"
+					onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
+					disabled={currentPage === 1}
+				>
+					←
+				</Button>
 
-			{getPageNumbers().map((pageNumber, idx) =>
-				pageNumber === '...' ? (
-					<span key={`ellipsis-${idx}`} className="px-3 py-1">
-						...
-					</span>
-				) : (
-					<Button
-						key={`page-${pageNumber}`}
-						variant="ghost"
-						size="sm"
-						onClick={() => handlePageChange(pageNumber as number)}
-						className={currentPage === pageNumber ? 'pb-4' : ''}
-					>
-						{pageNumber}
-					</Button>
-				),
-			)}
+				{getPageNumbers().map((pageNumber, idx) =>
+					pageNumber === '...' ? (
+						<span key={`ellipsis-${idx}`} className="px-3 py-1">
+							...
+						</span>
+					) : (
+						<Button
+							key={`page-${pageNumber}`}
+							variant="ghost"
+							size="sm"
+							onClick={() => handlePageChange(pageNumber as number)}
+							className={currentPage === pageNumber ? 'pb-4' : ''}
+						>
+							{pageNumber}
+						</Button>
+					),
+				)}
 
-			<Button
-				variant="ghost"
-				size="sm"
-				onClick={() =>
-					handlePageChange(Math.min(totalPagesCount, currentPage + 1))
-				}
-				disabled={currentPage === totalPagesCount}
-			>
-				→
-			</Button>
+				<Button
+					variant="ghost"
+					size="sm"
+					onClick={() =>
+						handlePageChange(Math.min(totalPagesCount, currentPage + 1))
+					}
+					disabled={currentPage === totalPagesCount}
+				>
+					→
+				</Button>
+			</div>
 		</div>
 	)
 }

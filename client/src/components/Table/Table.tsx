@@ -23,7 +23,6 @@ export const Table = ({
 				<table className="min-w-full">
 					<thead>
 						<tr>
-							{/* todo: change to be dynamic and have users or products */}
 							{TABLE_COLUMNS.map(column => (
 								<th
 									key={column.key}

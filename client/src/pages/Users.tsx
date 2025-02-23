@@ -56,7 +56,7 @@ export const Users = () => {
 	}
 
 	return (
-		<>
+		<div className="flex h-full flex-col">
 			<PageTitle title="Users" />
 			<div className="flex">
 				<EntriesDropdown
@@ -74,18 +74,22 @@ export const Users = () => {
 					setCurrentPage={setCurrentPage}
 				/>
 			</div>
-			<Table
-				loading={loading}
-				itemsPerPage={itemsPerPage}
-				filteredUsers={filteredUsers}
-				searchQuery={searchQuery}
-			/>
-			<Pagination
-				totalItems={usersCount}
-				itemsPerPage={itemsPerPage}
-				currentPage={currentPage}
-				setCurrentPage={setCurrentPage}
-			/>
-		</>
+			<div className="flex flex-1 flex-col">
+				<div className="flex-1">
+					<Table
+						loading={loading}
+						itemsPerPage={itemsPerPage}
+						filteredUsers={filteredUsers}
+						searchQuery={searchQuery}
+					/>
+				</div>
+				<Pagination
+					totalItems={usersCount}
+					itemsPerPage={itemsPerPage}
+					currentPage={currentPage}
+					setCurrentPage={setCurrentPage}
+				/>
+			</div>
+		</div>
 	)
 }
