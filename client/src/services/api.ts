@@ -2,12 +2,7 @@ import axiosInstance from '../utils/axiosInstance'
 import { UsersResponse, USER_FIELDS } from '../types/users'
 import { PRODUCT_FIELDS, ProductsResponse, Category } from '../types/products'
 
-interface UsersFilters {
-	gender?: 'male' | 'female'
-	limit?: number
-	skip?: number
-}
-interface ProductsFilters {
+interface BaseFilters {
 	limit?: number
 	skip?: number
 }
@@ -28,69 +23,57 @@ const api = (() => {
 		}
 	}
 
+	const fetchData = async <T>(
+		endpoint: string,
+		fields: typeof USER_FIELDS | typeof PRODUCT_FIELDS,
+		filters?: BaseFilters,
+		queryParams?: Record<string, string | number>,
+	): Promise<T> => {
+		const params = new URLSearchParams()
+
+		params.append('select', fields.join(','))
+
+		if (filters?.limit) params.append('limit', String(filters.limit))
+		if (filters?.skip) params.append('skip', String(filters.skip))
+		if (queryParams) {
+			Object.entries(queryParams).forEach(([key, value]) => {
+				params.append(key, String(value))
+			})
+		}
+
+		const url = `${endpoint}?${params.toString()}`
+		const response = await get(url)
+
+		return response as T
+	}
+
 	return {
-		users: async (filters?: UsersFilters): Promise<UsersResponse> => {
-			const params = new URLSearchParams()
-
-			params.append('select', USER_FIELDS.join(','))
-
-			if (filters?.limit) params.append('limit', String(filters.limit))
-			if (filters?.skip) params.append('skip', String(filters.skip))
-
-			let url = `/users?${params.toString()}`
-
-			if (filters?.gender)
-				url = `/users/filter?key=gender&value=${
-					filters.gender
-				}&${params.toString()}`
-
-			const response = await get(url)
-
-			return response as UsersResponse
-		},
-		products: async (filters?: ProductsFilters): Promise<ProductsResponse> => {
-			const params = new URLSearchParams()
-
-			params.append('select', PRODUCT_FIELDS.join(','))
-
-			if (filters?.limit) params.append('limit', String(filters.limit))
-			if (filters?.skip) params.append('skip', String(filters.skip))
-
-			const url = `/products?${params.toString()}`
-			const response = await get(url)
-
-			return response as ProductsResponse
-		},
+		users: async (filters?: BaseFilters): Promise<UsersResponse> =>
+			fetchData<UsersResponse>('/users', USER_FIELDS, filters),
+		products: async (filters?: BaseFilters): Promise<ProductsResponse> =>
+			fetchData<ProductsResponse>('/products', PRODUCT_FIELDS, filters),
 		productsCategories: async (): Promise<Category[]> => {
 			const response = await get('/products/categories')
 			return response as Category[]
 		},
 		productsByCategory: async (
 			category: string,
-			{ limit, skip }: { limit: number; skip: number },
-		): Promise<ProductsResponse> => {
-			const params = new URLSearchParams()
-			if (limit) params.append('limit', String(limit))
-			if (skip) params.append('skip', String(skip))
-
-			const response = await get(`/products/category/${category}?${params}`)
-			return response as ProductsResponse
-		},
+			filters: BaseFilters,
+		): Promise<ProductsResponse> =>
+			fetchData<ProductsResponse>(
+				`/products/category/${category}`,
+				PRODUCT_FIELDS,
+				filters,
+			),
 		filterUsers: async (
 			key: 'email' | 'firstName' | 'birthDate' | 'gender',
 			value: string,
-			filters?: { limit?: number; skip?: number },
-		): Promise<UsersResponse> => {
-			const params = new URLSearchParams()
-
-			if (filters?.limit) params.append('limit', String(filters.limit))
-			if (filters?.skip) params.append('skip', String(filters.skip))
-
-			const url = `/users/filter?key=${key}&value=${value}&${params.toString()}`
-			const response = await get(url)
-
-			return response as UsersResponse
-		},
+			filters?: BaseFilters,
+		): Promise<UsersResponse> =>
+			fetchData<UsersResponse>('/users/filter', USER_FIELDS, filters, {
+				key,
+				value,
+			}),
 		filterProducts: async (
 			value: string,
 			filters?: { limit?: number; skip?: number },
