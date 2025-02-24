@@ -25,7 +25,6 @@ interface UserContextProps {
 	handleEmailFilter: (email: string) => Promise<void>
 	handleNameFilter: (name: string) => Promise<void>
 	handleBirthDateFilter: (date: string) => Promise<void>
-	handleGenderFilter: (gender: Gender) => Promise<void>
 }
 
 const UserContext = createContext<UserContextProps | undefined>(undefined)
@@ -48,16 +47,21 @@ export const UserProvider = ({ children }: UserProviderProps) => {
 		setLoading(true)
 		try {
 			const skip = (currentPage - 1) * itemsPerPage
-			const usersInfo = await api.users({
-				limit: itemsPerPage,
-				skip,
-			})
+			const usersInfo = selectedGender
+				? await api.usersByGender(selectedGender, {
+						limit: itemsPerPage,
+						skip,
+					})
+				: await api.users({
+						limit: itemsPerPage,
+						skip,
+					})
 			setUsers(usersInfo.users)
 			setUsersCount(usersInfo.total)
 		} finally {
 			setLoading(false)
 		}
-	}, [currentPage, itemsPerPage])
+	}, [currentPage, itemsPerPage, selectedGender])
 
 	const handleEmailFilter = useCallback(
 		async (email: string) => {
@@ -116,30 +120,6 @@ export const UserProvider = ({ children }: UserProviderProps) => {
 		[fetchUsers],
 	)
 
-	const handleGenderFilter = useCallback(
-		async (gender: Gender) => {
-			setLoading(true)
-			try {
-				if (!gender) {
-					setSelectedGender(undefined)
-					await fetchUsers()
-					return
-				}
-
-				const usersInfo = await api.filterUsers('gender', gender, {
-					limit: itemsPerPage,
-					skip: (currentPage - 1) * itemsPerPage,
-				})
-				setSelectedGender(gender)
-				setUsers(usersInfo.users)
-				setUsersCount(usersInfo.total)
-			} finally {
-				setLoading(false)
-			}
-		},
-		[currentPage, itemsPerPage, fetchUsers],
-	)
-
 	useEffect(() => {
 		fetchUsers()
 	}, [itemsPerPage, currentPage, fetchUsers])
@@ -175,7 +155,6 @@ export const UserProvider = ({ children }: UserProviderProps) => {
 		handleEmailFilter,
 		handleNameFilter,
 		handleBirthDateFilter,
-		handleGenderFilter,
 	}
 
 	return <UserContext.Provider value={value}>{children}</UserContext.Provider>

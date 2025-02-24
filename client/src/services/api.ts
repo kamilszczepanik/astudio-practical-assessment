@@ -65,8 +65,16 @@ const api = (() => {
 				PRODUCT_FIELDS,
 				filters,
 			),
+		usersByGender: async (
+			gender: string,
+			filters: BaseFilters,
+		): Promise<UsersResponse> =>
+			fetchData<UsersResponse>(`users/filter`, USER_FIELDS, filters, {
+				key: 'gender',
+				value: gender,
+			}),
 		filterUsers: async (
-			key: 'email' | 'firstName' | 'birthDate' | 'gender',
+			key: 'email' | 'firstName' | 'birthDate',
 			value: string,
 			filters?: BaseFilters,
 		): Promise<UsersResponse> =>

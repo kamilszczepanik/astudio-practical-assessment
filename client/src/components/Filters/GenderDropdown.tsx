@@ -1,3 +1,4 @@
+import { useUserContext } from '../../contexts/UserContext'
 import { Gender } from '../../types/users'
 import { DropdownMenuItem } from '../ui/dropdown-menu'
 
@@ -13,14 +14,11 @@ const GENDER_OPTIONS = [
 	{ label: 'Female', value: 'female' as const },
 ] as const
 
-interface Props {
-	selectedGender: Gender
-	onFilter: (gender: Gender) => Promise<void>
-}
+export const GenderDropdown = () => {
+	const { selectedGender, setSelectedGender } = useUserContext()
 
-export const GenderDropdown = ({ selectedGender, onFilter }: Props) => {
 	const handleGenderChange = async (value: Gender) => {
-		await onFilter(value)
+		setSelectedGender(value)
 	}
 
 	return (

@@ -1,30 +1,17 @@
 import { useState, useEffect, useRef } from 'react'
 import { Button } from '../ui/button'
 
-interface FilterInputProps {
+interface Props {
 	label: string
 	title: string
 	onFilter: (value: string) => Promise<void>
 	placeholder: string
 }
 
-export const FilterInput = ({
-	label,
-	title,
-	onFilter,
-	placeholder,
-}: FilterInputProps) => {
+export const FilterInput = ({ label, title, onFilter, placeholder }: Props) => {
 	const [showInput, setShowInput] = useState(false)
 	const [value, setValue] = useState('')
 	const timeoutRef = useRef<ReturnType<typeof setTimeout>>(null)
-
-	useEffect(() => {
-		return () => {
-			if (timeoutRef.current) {
-				clearTimeout(timeoutRef.current)
-			}
-		}
-	}, [])
 
 	const handleChange = (newValue: string) => {
 		setValue(newValue)
@@ -37,6 +24,14 @@ export const FilterInput = ({
 			onFilter(newValue)
 		}, 300)
 	}
+
+	useEffect(() => {
+		return () => {
+			if (timeoutRef.current) {
+				clearTimeout(timeoutRef.current)
+			}
+		}
+	}, [])
 
 	return (
 		<div className="flex items-center gap-2">
